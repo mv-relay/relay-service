@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>it.land.recycle</groupId>
+		<artifactId>lancycle</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>it.land.recycle</groupId>
+	<artifactId>relay-web</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>landcycle-web Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<!-- deps -->
+		<!-- <dependency> -->
+		<!-- <groupId>it.nexus.jarch</groupId> -->
+		<!-- <artifactId>jarch-deps-cxf</artifactId> -->
+		<!-- <version>${jarch.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>it.nexus.jarch</groupId> -->
+		<!-- <artifactId>jarch-deps-spring-web</artifactId> -->
+		<!-- <version>${jarch.version}</version> -->
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>it.land.recycle</groupId>
+			<artifactId>landcycle-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+
+
+
+		<!-- <dependency> -->
+		<!-- <groupId>com.h2database</groupId> -->
+		<!-- <artifactId>h2</artifactId> -->
+		<!-- <version>1.4.178</version> -->
+		<!-- </dependency> -->
+
+	</dependencies>
+
+	<build>
+		<finalName>land-web</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
