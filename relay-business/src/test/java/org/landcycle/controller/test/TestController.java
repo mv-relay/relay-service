@@ -12,6 +12,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -148,7 +149,7 @@ public class TestController {
 			user.setUser(u);
 			ForSale forSale = new ForSale();
 			forSale.setDescription("test");
-			forSale.setId("fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd8");
+			forSale.setId("fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd9");
 			forSale.setImageType("jpg");
 			Position pos = new Position();
 //			pos.setLat(new Double("45.3194077").doubleValue());
@@ -164,12 +165,64 @@ public class TestController {
 			StringEntity input = new StringEntity(jjson);
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpPost postRequest = new HttpPost(
-					"http://localhost:8080/land-web/rest/land");
-
+					"http://localhost:8080/relay-service-web/rest/land");
+			
 //			input.setContentType("application/json");
 			postRequest.addHeader("Content-Type", "application/json");
 			postRequest.setEntity(input);
 			
+			HttpResponse response = httpClient.execute(postRequest);
+//			if (response.getStatusLine().getStatusCode() != 201) {
+//				throw new RuntimeException("Failed : HTTP error code : "
+//						+ response.getStatusLine().getStatusCode());
+//			}
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					(response.getEntity().getContent())));
+			
+			String output;
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println(output);
+			}
+			
+//			httpClient.getConnectionManager().shutdown();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void update(){
+		try {
+			UserItem user = new UserItem();
+			User u = new User();
+			u.setMail("massimiliano.regis@gmail.com");
+			user.setUser(u);
+			ForSale forSale = new ForSale();
+			forSale.setDescription("test");
+			forSale.setId("fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd9");
+			forSale.setImageType("jpg");
+			forSale.setMailAcq("valerio.artusi@gmail.com");
+			Position pos = new Position();
+//			pos.setLat(new Double("45.3194077").doubleValue());
+//			pos.setLng(new Double("9.5237682").doubleValue());
+			pos.setLat(new Double("45.57055440").doubleValue());
+			pos.setLng(new Double("8.05484050").doubleValue());
+			forSale.setPosition(pos);
+			forSale.setStream(null);
+			user.setForSale(forSale);
+			ObjectMapper mapper = new ObjectMapper();
+			String jjson = mapper.writeValueAsString(user);
+			System.out.println(jjson);
+			StringEntity input = new StringEntity(jjson);
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpPut postRequest = new HttpPut(
+					"http://localhost:8080/relay-service-web/rest/land");
+//			input.setContentType("text/xml; charset=ISO-8859-1");
+			input.setContentType("application/json");
+			postRequest.addHeader("Content-Type", "application/json");
+			postRequest.setEntity(input);
+//			httpCon.setRequestMethod("PUT");
 			HttpResponse response = httpClient.execute(postRequest);
 //			if (response.getStatusLine().getStatusCode() != 201) {
 //				throw new RuntimeException("Failed : HTTP error code : "

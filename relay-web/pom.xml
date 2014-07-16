@@ -4,11 +4,11 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>it.land.recycle</groupId>
-		<artifactId>lancycle</artifactId>
+		<groupId>org.land.recycle</groupId>
+		<artifactId>relay</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<groupId>it.land.recycle</groupId>
+	<groupId>org.land.recycle</groupId>
 	<artifactId>relay-web</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -33,8 +33,8 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>it.land.recycle</groupId>
-			<artifactId>landcycle-service</artifactId>
+			<groupId>org.land.recycle</groupId>
+			<artifactId>relay-business</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -55,7 +55,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>land-web</finalName>
+		<finalName>relay-service-web</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>

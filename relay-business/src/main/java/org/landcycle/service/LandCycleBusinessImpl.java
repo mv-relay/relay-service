@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.landcycle.api.ForSale;
 import org.landcycle.api.Position;
 import org.landcycle.api.User;
@@ -30,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component("landCycleBusiness")
 public class LandCycleBusinessImpl implements LandCycleBusiness {
 
+	protected static final Logger logger = Logger.getLogger(LandCycleBusinessImpl.class.getName());
+	
 	@Resource
 	org.landcycle.util.ConfigurationLoader configurationLoader;
 
@@ -41,7 +44,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	@Override
 	public UserItem saveOrUpdateSale(UserItem upload) throws Exception {
 		// TODO Auto-generated method stub
-
+		logger.debug("Input save or update : "+CommonUtils.bean2string(upload));
 		if (upload.getForSale() != null
 				&& upload.getForSale().getStream() != null
 				&& upload.getForSale().getStream().getBytes().length > 0) {
@@ -58,6 +61,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			forSaleEntity.setImg(id);
 			forSaleEntity.setId(id);
 			forSaleEntity.setMailvend(upload.getUser().getMail());
+			forSaleEntity.setMailacq(upload.getForSale().getMailAcq());
 			BeanUtils
 					.copyProperties(sale, forSaleEntity, new String[] { "id" });
 			Position positio = upload.getForSale().getPosition();
@@ -227,10 +231,12 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			forSaleEntity.setLng(positio.getLng());
 		}
 		// List<UserEntity> users = userDao.findAll();
-
+		if(user.getUser() != null )
+			forSaleEntity.setMailvend(user.getUser().getMail());
+		logger.debug("Entity dao request : "+ CommonUtils.bean2string(forSaleEntity));
 		List<ForSaleEntity> resp = forSaleDao.findByQuery(forSaleEntity);
 		List<UserItem> response = new ArrayList<UserItem>();
-		System.out.println("List<ForSaleEntity> resp : "
+		logger.debug("List<ForSaleEntity> resp : "
 				+ CommonUtils.bean2string(resp));
 		// String tmpmail = null;
 		// List<ForSale> tmpItems = new ArrayList<ForSale>();
@@ -271,10 +277,10 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				tmpItem = new UserItem();
 				tmpuser = new User();
 				UserEntity ent = userDao.findOne(tmp.getMailvend());
-				System.out.println("USER : " + CommonUtils.bean2string(ent));
+				logger.debug("USER : " + CommonUtils.bean2string(ent));
 				BeanUtils.copyProperties(ent, tmpuser);
 				tmpItem.setUser(tmpuser);
-				System.out.println("tmpItem : "
+				logger.debug("tmpItem : "
 						+ CommonUtils.bean2string(tmpItem));
 				ForSale tmpFor = new ForSale();
 				BeanUtils.copyProperties(tmp, tmpFor);

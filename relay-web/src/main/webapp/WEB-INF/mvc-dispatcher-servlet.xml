@@ -37,4 +37,16 @@
 	
 	<import resource="classpath:/dao-context.xml" />
 	<import resource="classpath:cfg-certificate-jndi.xml" />
+	
+	
+	<bean id="log4jInitializationRegistration" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>/Users/valerio/XSERVER/tomcat-internal1/lib/log4j-relay.xml</value>
+				<value>60000</value>
+			</list>
+		</property>
+	</bean>
 </beans>

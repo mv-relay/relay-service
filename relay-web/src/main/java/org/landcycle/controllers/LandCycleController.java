@@ -5,8 +5,10 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.landcycle.api.ForSale;
 import org.landcycle.api.Position;
+import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
 import org.landcycle.api.exception.LandcycleException;
 import org.landcycle.api.rest.JsonResponseData;
@@ -27,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/land")
 public class LandCycleController extends BaseRestController {
 
+	protected static final Logger logger = Logger.getLogger(LandCycleController.class.getName());
 	int SIZE_AVATAR = 71680000;
 
 	@RequestMapping(value = "/ping")
@@ -44,7 +47,7 @@ public class LandCycleController extends BaseRestController {
 		try {
 			// ObjectMapper mapper = new ObjectMapper();
 			// String jjson = mapper.writeValueAsString(upload);
-			System.out.println(upload.toString());
+			logger.debug(upload.toString());
 			landCycleBusiness.saveOrUpdateSale(upload);
 			return ariaResponse(upload);
 		} catch (Exception e) {
@@ -56,7 +59,8 @@ public class LandCycleController extends BaseRestController {
 	public @ResponseBody
 	JsonResponseData<UserItem> findAround(
 			@RequestParam(value = "lat", required = false) String lat,
-			@RequestParam(value = "lng", required = false) String lng) {
+			@RequestParam(value = "lng", required = false) String lng,
+			@RequestParam(value = "mailvend", required = false) String mailvend) {
 		try {
 			UserItem item = new UserItem();
 			if (lat != null && !"".equals(lat) && lng != null
@@ -66,11 +70,13 @@ public class LandCycleController extends BaseRestController {
 				pos.setLng(Double.parseDouble(lng));
 				ForSale sale = new ForSale();
 				sale.setPosition(pos);
+				User u = new User();
+				u.setMail(mailvend);
+				item.setUser(u);
 				item.setForSale(sale);
 			}
 			List<UserItem> items = landCycleBusiness.find(item);
-			System.out
-					.println("findAround : " + CommonUtils.bean2string(items));
+			logger.debug("findAround : " + CommonUtils.bean2string(items));
 			return ariaResponse(items);
 		} catch (Exception e) {
 			throw new LandcycleException(e);
@@ -80,10 +86,13 @@ public class LandCycleController extends BaseRestController {
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.PUT)
 	public @ResponseBody
-	JsonResponseData<UserItem> update(@ModelAttribute("upolad") UserItem upload) {
-
+	JsonResponseData<UserItem> update(@RequestBody UserItem upload) {
+		try {
+		landCycleBusiness.saveOrUpdateSale(upload);
 		return ariaResponse(new UserItem());
-
+		} catch (Exception e) {
+			throw new LandcycleException(e);
+		}
 	}
 
 	@RequestMapping(value = "/Upload", method = RequestMethod.POST)
@@ -94,7 +103,7 @@ public class LandCycleController extends BaseRestController {
 		try {
 			MultipartFile file = uploadedFile.getFile();
 			String ctype = file.getContentType();
-			System.out.println("Formato  " + ctype);
+			logger.debug("Formato  " + ctype);
 			long size = file.getSize();
 			System.out.println("SIZE FILE : " + size);
 			if (size > SIZE_AVATAR) {

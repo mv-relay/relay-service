@@ -4,11 +4,11 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>it.land.recycle</groupId>
-		<artifactId>lancycle</artifactId>
+		<groupId>org.land.recycle</groupId>
+		<artifactId>relay</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<groupId>it.land.recycle</groupId>
+	<groupId>org.land.recycle</groupId>
 	<artifactId>relay-dao</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>landcycle-dao</name>
@@ -43,6 +43,12 @@
 			<version>${jarch.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+			<type>jar</type>
+		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>org.hibernate</groupId> -->
 <!-- 			<artifactId>hibernate-entitymanager</artifactId> -->
@@ -54,4 +60,5 @@
 <!-- 			<version>1.6.0.RELEASE</version> -->
 <!-- 		</dependency> -->
 	</dependencies>
+	
 </project>

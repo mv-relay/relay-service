@@ -13,13 +13,13 @@ public class ForSale implements Serializable {
 	private byte[] streams;
 	private String id;
 	private String name;
+	private String mailAcq;
 	private String imageType;
 	private String img;
 	private String description;
 	private String[] tags;
 	private Position position;
 
-	
 	public byte[] getStreams() {
 		return streams;
 	}
@@ -50,6 +50,14 @@ public class ForSale implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getMailAcq() {
+		return mailAcq;
+	}
+
+	public void setMailAcq(String mailAcq) {
+		this.mailAcq = mailAcq;
 	}
 
 	public String getImageType() {

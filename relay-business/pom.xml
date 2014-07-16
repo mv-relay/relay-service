@@ -4,11 +4,11 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>it.land.recycle</groupId>
-		<artifactId>lancycle</artifactId>
+		<groupId>org.land.recycle</groupId>
+		<artifactId>relay</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<groupId>it.land.recycle</groupId>
+	<groupId>org.land.recycle</groupId>
 	<artifactId>relay-business</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>landcycle-service</name>
@@ -19,13 +19,13 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>it.land.recycle</groupId>
-			<artifactId>landcycle-api</artifactId>
+			<groupId>org.land.recycle</groupId>
+			<artifactId>relay-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>it.land.recycle</groupId>
-			<artifactId>landcycle-dao</artifactId>
+			<groupId>org.land.recycle</groupId>
+			<artifactId>relay-dao</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -72,6 +72,12 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+			<type>jar</type>
 		</dependency>
 	</dependencies>
 </project>

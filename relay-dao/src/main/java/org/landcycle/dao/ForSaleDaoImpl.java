@@ -29,10 +29,11 @@ public class ForSaleDaoImpl extends HibernateDaoSupport implements ForSaleDao {
 		Query query = null;
 		if (user.getLat() != null && user.getLng() != null) {
 			//cerca nel raggio di 50 km
-			query = session.createSQLQuery("select  {f.*}, ( 6371 * acos( cos( radians(37) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(:longitudine) ) + sin( radians(:latitudine) ) * sin( radians( lat ) ) ) ) AS distance from user u, forsale f HAVING distance < 50 ORDER BY distance LIMIT 0 , 50")  
+			query = session.createSQLQuery("select  {f.*}, ( 6371 * acos( cos( radians(:latitudine) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(:longitudine) ) + sin( radians(:latitudine) ) * sin( radians( lat ) ) ) ) AS distance from forsale f where f.mailvend <> :mailvend  HAVING distance < 50 ORDER BY distance LIMIT 0 , 50")  
 					   .addEntity("f", ForSaleEntity.class);
 			query.setParameter("longitudine", user.getLat());
 			query.setParameter("latitudine", user.getLng());
+			query.setParameter("mailvend", user.getMailvend());
 		}else{
 			query = session.createSQLQuery("select  {f.*} from  forsale f")  
 			   .addEntity("f", ForSaleEntity.class);
