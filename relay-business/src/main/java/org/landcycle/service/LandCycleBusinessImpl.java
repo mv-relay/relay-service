@@ -31,8 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component("landCycleBusiness")
 public class LandCycleBusinessImpl implements LandCycleBusiness {
 
-	protected static final Logger logger = Logger.getLogger(LandCycleBusinessImpl.class.getName());
-	
+	protected static final Logger log = Logger.getLogger(LandCycleBusinessImpl.class.getName());
+
 	@Resource
 	org.landcycle.util.ConfigurationLoader configurationLoader;
 
@@ -44,16 +44,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	@Override
 	public UserItem saveOrUpdateSale(UserItem upload) throws Exception {
 		// TODO Auto-generated method stub
-		logger.debug("Input save or update : "+CommonUtils.bean2string(upload));
-		if (upload.getForSale() != null
-				&& upload.getForSale().getStream() != null
-				&& upload.getForSale().getStream().getBytes().length > 0) {
-			// final byte[] stream = upload.getForSale().getStream().getBytes();
-
-		}
-		// UserEntity used = new UserEntity();
-		// BeanUtils.copyProperties(upload, used);
-		// userDao.save(used);
+		log.debug("Input save or update : " + CommonUtils.bean2string(upload));
 		if (upload.getForSale() != null) {
 			ForSale sale = upload.getForSale();
 			ForSaleEntity forSaleEntity = new ForSaleEntity();
@@ -62,63 +53,19 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			forSaleEntity.setId(id);
 			forSaleEntity.setMailvend(upload.getUser().getMail());
 			forSaleEntity.setMailacq(upload.getForSale().getMailAcq());
-			BeanUtils
-					.copyProperties(sale, forSaleEntity, new String[] { "id" });
+			BeanUtils.copyProperties(sale, forSaleEntity, new String[] { "id" });
 			Position positio = upload.getForSale().getPosition();
 			if (positio != null) {
 				forSaleEntity.setLat(positio.getLat());
 				forSaleEntity.setLng(positio.getLng());
 			}
-			forSaleEntity
-					.setImg(getUrlImage() + id + "." + sale.getImageType());
+			forSaleEntity.setImg(getUrlImage() + id + "." + sale.getImageType());
 			forSaleDao.save(forSaleEntity);
 		}
 		return upload;
 	}
 
-	private void writeFile(String stream, String path) throws IOException,
-			Exception {
-		// *************************************************************************
-		// Inizializzo le variabili
-		// *************************************************************************
-		OutputStream fos = null;
-		BufferedOutputStream bos = null;
-		try {
-			// *************************************************************************
-			// Converto la string base64 in byte
-			// *************************************************************************
-			byte[] bstream = stream.getBytes();
-			// *************************************************************************
-			// Scrivo il file
-			// *************************************************************************
-			fos = new FileOutputStream(path);
-			bos = new BufferedOutputStream(fos);
-			bos.write(bstream);
-			// change permission
-			// int esito = chmod(path, 666);
-
-			// log.debug("Esito change permission {} ", esito);
-		} catch (IOException e) {
-			// log.error("Errore nello scrivere il file", e);
-			e.printStackTrace();
-			throw e;
-		} finally {
-			// *************************************************************************
-			// Chiudo gli stream
-			// *************************************************************************
-			if (bos != null) {
-				bos.flush();
-				bos.close();
-			}
-			if (fos != null) {
-				fos.flush();
-				fos.close();
-			}
-		}
-	}
-
-	private void writeFile(byte[] stream, String path) throws IOException,
-			Exception {
+	private void writeFile(byte[] stream, String path) throws IOException, Exception {
 		// *************************************************************************
 		// Inizializzo le variabili
 		// *************************************************************************
@@ -140,8 +87,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 
 			// log.debug("Esito change permission {} ", esito);
 		} catch (IOException e) {
-			// log.error("Errore nello scrivere il file", e);
-			e.printStackTrace();
+			log.error("Errore nello scrivere il file", e);
 			throw e;
 		} finally {
 			// *************************************************************************
@@ -169,6 +115,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	 * @throws Exception
 	 *             the exception
 	 */
+	@SuppressWarnings("unused")
 	private byte[] readFile(File file) throws IOException, Exception {
 		// *************************************************************************
 		// Inizializzo le variabili
@@ -183,7 +130,6 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			long length = file.length();
 			if (length > Integer.MAX_VALUE) {
 				// File is too large
-				// TODO
 			}
 			bytes = new byte[(int) length];
 			// *************************************************************************
@@ -191,14 +137,12 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			// *************************************************************************
 			int offset = 0;
 			int numRead = 0;
-			while (offset < bytes.length
-					&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
 				offset += numRead;
 			}
 
 			if (offset < bytes.length) {
-				throw new IOException("Could not completely read file "
-						+ file.getName());
+				throw new IOException("Could not completely read file " + file.getName());
 			}
 		} finally {
 			if (is != null)
@@ -224,22 +168,17 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	public List<UserItem> find(UserItem user) throws Exception {
 		// TODO Auto-generated method stub
 		ForSaleEntity forSaleEntity = new ForSaleEntity();
-		if (user.getForSale() != null
-				&& user.getForSale().getPosition() != null) {
+		if (user.getForSale() != null && user.getForSale().getPosition() != null) {
 			Position positio = user.getForSale().getPosition();
 			forSaleEntity.setLat(positio.getLat());
 			forSaleEntity.setLng(positio.getLng());
 		}
-		// List<UserEntity> users = userDao.findAll();
-		if(user.getUser() != null )
+		if (user.getUser() != null)
 			forSaleEntity.setMailvend(user.getUser().getMail());
-		logger.debug("Entity dao request : "+ CommonUtils.bean2string(forSaleEntity));
+		log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
 		List<ForSaleEntity> resp = forSaleDao.findByQuery(forSaleEntity);
 		List<UserItem> response = new ArrayList<UserItem>();
-		logger.debug("List<ForSaleEntity> resp : "
-				+ CommonUtils.bean2string(resp));
-		// String tmpmail = null;
-		// List<ForSale> tmpItems = new ArrayList<ForSale>();
+		log.debug("List<ForSaleEntity> resp : " + CommonUtils.bean2string(resp));
 		List<ForSale> respSales = new ArrayList<ForSale>();
 		ForSaleEntity tmp = null;
 		UserItem tmpItem = null;
@@ -264,7 +203,6 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			} else {
 				ForSale tmpFor = new ForSale();
 				BeanUtils.copyProperties(tmp, tmpFor);
-				// tmpFor.setImg(getUrlImage()+"/"+tmpFor.getId());
 				respSales.add(tmpFor);
 				Position pos = new Position();
 				pos.setLat(tmp.getLat());
@@ -277,67 +215,40 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				tmpItem = new UserItem();
 				tmpuser = new User();
 				UserEntity ent = userDao.findOne(tmp.getMailvend());
-				logger.debug("USER : " + CommonUtils.bean2string(ent));
+				log.debug("USER : " + CommonUtils.bean2string(ent));
 				BeanUtils.copyProperties(ent, tmpuser);
 				tmpItem.setUser(tmpuser);
-				logger.debug("tmpItem : "
-						+ CommonUtils.bean2string(tmpItem));
+				log.debug("tmpItem : " + CommonUtils.bean2string(tmpItem));
 				ForSale tmpFor = new ForSale();
 				BeanUtils.copyProperties(tmp, tmpFor);
-				// tmpFor.setImg(getUrlImage()+"/"+tmpFor.getId());
 				respSales.add(tmpFor);
 				Position pos = new Position();
 				pos.setLat(tmp.getLat());
 				pos.setLng(tmp.getLng());
 				tmpFor.setPosition(pos);
 				tmpItem.setForSales(respSales);
-
-				// tmpmail = tmp.getMailvend();
 				response.add(tmpItem);
 			}
-
 		}
-
 		return response;
 	}
 
-	// private void checkLastRecord(TimelineItem[] items, boolean paging, int
-	// rowPage, List<TimelineItem> tmpItems, TimelineItem prevItem, int i) {
-	// if (i == (items.length - 1) || (rowPage == PAGE_RECORDS && !paging)) {
-	// if (checkAggregate(prevItem)) {
-	// prevItem.setCount(0);
-	// tmpItems.add(prevItem);
-	// } else {
-	// mergeDescription(items[i]);
-	// tmpItems.add(items[i]);
-	// }
-	//
-	// }
-	// }
 	@Override
 	public UserItem upload(UserItem upload) throws Exception {
-		// TODO Auto-generated method stub
 		UUID uuidFile = UUID.randomUUID();
-		// if(upload.getForSale() == null){
-		// ForSale forSale = new ForSale();
 		upload.getForSale().setId(uuidFile.toString());
 		// upload.setForSale(forSale);
 		// }
-		String fileName = uploadFileName(upload.getForSale().getImageType(),
-				upload.getForSale().getId(), getDirUpload());
-		System.out.println("##############fileName : " + fileName);
+		String fileName = uploadFileName(upload.getForSale().getImageType(), upload.getForSale().getId(),
+				getDirUpload());
+		log.debug("##############fileName : " + fileName);
 		writeFile(upload.getForSale().getStreams(), fileName);
-		upload.getForSale().setStream(null);
+		// clean output
+		upload.getForSale().setStreams(null);
 		return upload;
 	}
 
-	private String uploadFileName(String type, String idFile, String path)
-			throws Exception {
-
-		// String path = getEnvEntryString(MediaConstants.DOQ_PATH);
-		// if (path == null || (path != null && path.length() == 0)) {
-		// throw new DevelopmentException("Path di upload non configurato");
-		// }
+	private String uploadFileName(String type, String idFile, String path) throws Exception {
 		// //
 		// *************************************************************************
 		// // Creo in nome del file

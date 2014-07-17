@@ -6,9 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.landcycle.api.exception.LandcycleException;
 import org.landcycle.api.rest.JsonResponseData;
-import org.landcycle.exception.AsiaApplicationException;
-import org.landcycle.exception.AsiaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -62,7 +61,7 @@ public abstract class JsonResource {
 	@ExceptionHandler
 	@ResponseStatus(value = HttpStatus.METHOD_FAILURE)
 	public @ResponseBody
-	JsonResponseData<Object> ariaHandler(AsiaException e, HttpServletRequest request) {
+	JsonResponseData<Object> ariaHandler(LandcycleException e, HttpServletRequest request) {
 		JsonResponseData<Object> errorResponse = new JsonResponseData<Object>();
 		errorResponse.setErrorCode(e.getErrorCode());
 		errorResponse.setErrorDescription(e.getMessage());
@@ -70,14 +69,14 @@ public abstract class JsonResource {
 		return errorResponse;
 	}
 
-	@ExceptionHandler
-	@ResponseStatus(value = HttpStatus.OK)
-	public @ResponseBody
-	JsonResponseData<Object> aria200Handler(AsiaApplicationException e, HttpServletRequest request) {
-		JsonResponseData<Object> errorResponse = new JsonResponseData<Object>();
-		errorResponse.setErrorCode(e.getErrorCode());
-		errorResponse.setErrorDescription(e.getMessage());
-		setLayersIo(errorResponse);
-		return errorResponse;
-	}
+//	@ExceptionHandler
+//	@ResponseStatus(value = HttpStatus.OK)
+//	public @ResponseBody
+//	JsonResponseData<Object> aria200Handler(AsiaApplicationException e, HttpServletRequest request) {
+//		JsonResponseData<Object> errorResponse = new JsonResponseData<Object>();
+//		errorResponse.setErrorCode(e.getErrorCode());
+//		errorResponse.setErrorDescription(e.getMessage());
+//		setLayersIo(errorResponse);
+//		return errorResponse;
+//	}
 }
