@@ -38,13 +38,24 @@
 	<import resource="classpath:/dao-context.xml" />
 	<import resource="classpath:cfg-certificate-jndi.xml" />
 	
+	<bean id="logfile" class="org.springframework.jndi.JndiObjectFactoryBean"
+		lazy-init="true">
+		<property name="jndiName" value="java:comp/env/jndi.log4j" />
+	</bean>
 	
+	
+	<bean id="RestFilter" class="org.landcycle.controllers.RestFilter" />
 	<bean id="log4jInitializationRegistration" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
 		<property name="targetMethod" value="initLogging" />
 		<property name="arguments">
+<!-- 			<list> -->
+<!-- 				<value>/Users/valerio/XSERVER/tomcat-internal1/lib/log4j-relay.xml</value> -->
+<!-- 				<value>../../../lib/log4j-relay.xml</value> -->
+<!-- 				<value>60000</value> -->
+<!-- 			</list> -->
 			<list>
-				<value>/Users/valerio/XSERVER/tomcat-internal1/lib/log4j-relay.xml</value>
+				<ref bean="logfile" />
 				<value>60000</value>
 			</list>
 		</property>

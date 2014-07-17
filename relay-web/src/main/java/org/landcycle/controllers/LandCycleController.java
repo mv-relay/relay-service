@@ -43,12 +43,13 @@ public class LandCycleController extends BaseRestController {
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody
-	JsonResponseData<UserItem> saveOrUpdate(@RequestBody UserItem upload) {
+	JsonResponseData<UserItem> saveOrUpdate(@RequestBody UserItem upload, HttpServletResponse response) {
 		try {
 			// ObjectMapper mapper = new ObjectMapper();
 			// String jjson = mapper.writeValueAsString(upload);
 			logger.debug(upload.toString());
 			landCycleBusiness.saveOrUpdateSale(upload);
+//			response.setHeader("Access-Control-Allow-Origin", "*");
 			return ariaResponse(upload);
 		} catch (Exception e) {
 			throw new LandcycleException(e);
@@ -60,7 +61,7 @@ public class LandCycleController extends BaseRestController {
 	JsonResponseData<UserItem> findAround(
 			@RequestParam(value = "lat", required = false) String lat,
 			@RequestParam(value = "lng", required = false) String lng,
-			@RequestParam(value = "mailvend", required = false) String mailvend) {
+			@RequestParam(value = "mailvend", required = false) String mailvend, HttpServletResponse response) {
 		try {
 			UserItem item = new UserItem();
 			if (lat != null && !"".equals(lat) && lng != null
@@ -77,6 +78,7 @@ public class LandCycleController extends BaseRestController {
 			}
 			List<UserItem> items = landCycleBusiness.find(item);
 			logger.debug("findAround : " + CommonUtils.bean2string(items));
+//			response.setHeader("Access-Control-Allow-Origin", "*");
 			return ariaResponse(items);
 		} catch (Exception e) {
 			throw new LandcycleException(e);
@@ -86,9 +88,10 @@ public class LandCycleController extends BaseRestController {
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.PUT)
 	public @ResponseBody
-	JsonResponseData<UserItem> update(@RequestBody UserItem upload) {
+	JsonResponseData<UserItem> update(@RequestBody UserItem upload, HttpServletResponse response) {
 		try {
 		landCycleBusiness.saveOrUpdateSale(upload);
+//		response.setHeader("Access-Control-Allow-Origin", "*");
 		return ariaResponse(new UserItem());
 		} catch (Exception e) {
 			throw new LandcycleException(e);
@@ -126,7 +129,7 @@ public class LandCycleController extends BaseRestController {
 			forSale.setStreams(file.getBytes());
 			item.setForSale(forSale);
 			landCycleBusiness.upload(item);
-			response.setHeader("Access-Control-Allow-Origin", "*");
+//			response.setHeader("Access-Control-Allow-Origin", "*");
 			return ariaResponse(item);
 		} catch (AsiaException e) {
 			// log.error("APPLICATION EXCEPTION", e);
