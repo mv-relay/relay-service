@@ -173,8 +173,11 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			forSaleEntity.setLat(positio.getLat());
 			forSaleEntity.setLng(positio.getLng());
 		}
-		if (user.getUser() != null)
+		if (user.getUser() != null){
+			UserEntity u = new UserEntity();
+			u.setMail(user.getUser().getMail());
 			forSaleEntity.setMailvend(user.getUser().getMail());
+		}
 		log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
 		List<ForSaleEntity> resp = forSaleDao.findByQuery(forSaleEntity);
 		List<UserItem> response = new ArrayList<UserItem>();

@@ -202,7 +202,7 @@ public class TestController {
 			forSale.setDescription("test");
 			forSale.setId("fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd9");
 			forSale.setImageType("jpg");
-			forSale.setMailAcq("valerio.artusi@gmail.com");
+			forSale.setMailAcq("valerioz.artusi@gmail.com");
 			Position pos = new Position();
 //			pos.setLat(new Double("45.3194077").doubleValue());
 //			pos.setLng(new Double("9.5237682").doubleValue());

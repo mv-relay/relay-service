@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "forsale")
+@Table(name = "Forsale")
 public class ForSaleEntity implements Serializable {
 	@Id
 	@Column(name = "id", length = 100)
@@ -24,22 +24,23 @@ public class ForSaleEntity implements Serializable {
 	private String description;
 	@Column(name = "tags", length = 100)
 	private String tags;
-	 @Column(name = "mailvend", length = 100)
-	 private String mailvend;
+	@Column(name = "mailvend", length = 100)
+	private String mailvend;
 	@Column(name = "mailacq", length = 100)
 	private String mailacq;
 	@Column(name = "optional", length = 100)
 	private String optional;
-	@Column(name = "citta", length = 150)
+	@Column(name = "city", length = 150)
 	private String citta;
 	@Column(name = "lat", columnDefinition = "Decimal(10,8)")
 	private Double lat;
 	// @Column(name = "lng	", columnDefinition = "Decimal(10,8)")
 	private Double lng;
+	private int category;
 
-//	@ManyToOne
-//	@JoinColumn(name = "mailvend")
-//	private UserEntity user;
+//	 @ManyToOne
+//	 @JoinColumn(name = "mailvend")
+//	 private UserEntity user;
 
 	public String getId() {
 		return id;
@@ -81,13 +82,13 @@ public class ForSaleEntity implements Serializable {
 		this.tags = tags;
 	}
 
-	 public String getMailvend() {
-	 return mailvend;
-	 }
-	
-	 public void setMailvend(String mailvend) {
-	 this.mailvend = mailvend;
-	 }
+	public String getMailvend() {
+		return mailvend;
+	}
+
+	public void setMailvend(String mailvend) {
+		this.mailvend = mailvend;
+	}
 
 	public String getMailacq() {
 		return mailacq;
@@ -129,12 +130,20 @@ public class ForSaleEntity implements Serializable {
 		this.citta = citta;
 	}
 
-	// public UserEntity getUser() {
-	// return user;
-	// }
-	//
-	// public void setUser(UserEntity user) {
-	// this.user = user;
-	// }
+	public int getCategory() {
+		return category;
+	}
+
+	public void setCategory(int category) {
+		this.category = category;
+	}
+
+//	public UserEntity getUser() {
+//		return user;
+//	}
+//
+//	public void setUser(UserEntity user) {
+//		this.user = user;
+//	}
 
 }

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "user")
+@Table(name = "User")
 public class UserEntity implements Serializable {
 	
 	public UserEntity(){}
@@ -22,9 +22,9 @@ public class UserEntity implements Serializable {
 	@Id
 	@Column(name = "mail", length = 80)
 	private String mail;
-	@Column(name = "nome", length = 80)
+	@Column(name = "firstName", length = 80)
 	private String nome;
-	@Column(name = "cognome", length = 80)
+	@Column(name = "lastName", length = 80)
 	private String cognome;
 	@Column(name = "avatar", length = 80)
 	private String avatar;
