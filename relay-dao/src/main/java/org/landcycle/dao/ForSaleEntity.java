@@ -24,8 +24,8 @@ public class ForSaleEntity implements Serializable {
 	private String description;
 	@Column(name = "tags", length = 100)
 	private String tags;
-	@Column(name = "mailvend", length = 100)
-	private String mailvend;
+//	@Column(name = "mailvend", length = 100)
+//	private String mailvend;
 	@Column(name = "mailacq", length = 100)
 	private String mailacq;
 	@Column(name = "optional", length = 100)
@@ -38,9 +38,8 @@ public class ForSaleEntity implements Serializable {
 	private Double lng;
 	private int category;
 
-//	 @ManyToOne
-//	 @JoinColumn(name = "mailvend")
-//	 private UserEntity user;
+	 @ManyToOne
+	 private UserEntity user;
 
 	public String getId() {
 		return id;
@@ -82,13 +81,13 @@ public class ForSaleEntity implements Serializable {
 		this.tags = tags;
 	}
 
-	public String getMailvend() {
-		return mailvend;
-	}
-
-	public void setMailvend(String mailvend) {
-		this.mailvend = mailvend;
-	}
+//	public String getMailvend() {
+//		return mailvend;
+//	}
+//
+//	public void setMailvend(String mailvend) {
+//		this.mailvend = mailvend;
+//	}
 
 	public String getMailacq() {
 		return mailacq;
@@ -138,12 +137,12 @@ public class ForSaleEntity implements Serializable {
 		this.category = category;
 	}
 
-//	public UserEntity getUser() {
-//		return user;
-//	}
-//
-//	public void setUser(UserEntity user) {
-//		this.user = user;
-//	}
+	public UserEntity getUser() {
+		return user;
+	}
+
+	public void setUser(UserEntity user) {
+		this.user = user;
+	}
 
 }

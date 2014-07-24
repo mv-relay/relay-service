@@ -7,6 +7,8 @@ public interface ForSaleDao {
 	public abstract List<ForSaleEntity> findAll();
 
 	public abstract List<ForSaleEntity> findByQuery(ForSaleEntity user);
+	
+	public abstract List<UserEntity> findByQueryz(ForSaleEntity user);
 
 	public abstract ForSaleEntity save(ForSaleEntity user);
 
