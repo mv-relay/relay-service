@@ -2,29 +2,99 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/data/jpa
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
 	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
-	">
+	http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+    ">
 
 
-<!-- 	<bean id="dbDataSource" -->
-<!-- 		class="org.springframework.jndi.JndiObjectFactoryBean"> -->
-<!-- 		<property name="jndiName" value="java:comp/env/jdbc/MyLocalDB" /> -->
-<!-- 	</bean> -->
-	<bean id="userDao" class="org.landcycle.dao.UserDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	<bean id="forSaleDao" class="org.landcycle.dao.ForSaleDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
 
 
-	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/landcycle"
-		expected-type="javax.sql.DataSource" />
+	<!-- <bean id="dbDataSource" -->
+	<!-- class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+	<!-- <property name="jndiName" value="java:comp/env/jdbc/MyLocalDB" /> -->
+	<!-- </bean> -->
+	<!-- <bean id="userDao" class="org.landcycle.dao.UserDaoImpl"> -->
+	<!-- <property name="sessionFactory" ref="sessionFactory" /> -->
+	<!-- </bean> -->
+	<!-- <bean id="forSaleDao" class="org.landcycle.dao.ForSaleDaoImpl"> -->
+	<!-- <property name="sessionFactory" ref="sessionFactory" /> -->
+	<!-- </bean> -->
 
-	<import resource="classpath:abstract-db-config.xml" />
+
+	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/landcycle"></jee:jndi-lookup>
 	
+	
+	<jpa:repositories base-package="org.landcycle" />
+
+<!-- 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"> -->
+<!-- 		<property name="entityManagerFactory" ref="entityManagerFactory" /> -->
+<!-- 	</bean> -->
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="org.landcycle" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="database" value="MYSQL" />
+				<property name="generateDdl" value="true" />
+			</bean>
+		</property>
+	</bean>
+
+<!-- 	<jdbc:embedded-database id="dataSource" type="MYSQL" /> -->
+	
+	<!-- expected-type="javax.sql.DataSource" /> -->
+
+	<!-- <import resource="classpath:abstract-db-config.xml" /> -->
+
+<!-- 	<context:annotation-config /> -->
+<!-- 	<context:component-scan base-package="org.landcycle" /> -->
+<!-- 	<jpa:repositories base-package="org.landcycle" /> -->
+
+<!-- 	<bean id="entityManagerFactory" -->
+<!-- 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"> -->
+<!-- 		<property name="dataSource" ref="dataSource" /> -->
+<!-- 		<property name="jpaVendorAdapter"> -->
+<!-- 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" /> -->
+<!-- 		</property> -->
+<!-- 		<property name="packagesToScan" value="*" /> -->
+<!-- 		<property name="jpaDialect"> -->
+<!-- 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" /> -->
+<!-- 		</property> -->
+<!-- 		<property name="jpaProperties"> -->
+<!-- 			<props> -->
+<!-- 				<prop key="hibernate.show_sql">true</prop> -->
+<!-- 				<prop key="hibernate.format_sql">true</prop> -->
+<!-- 				<prop key="hibernate.hbm2ddl.auto">update</prop> -->
+<!-- 			</props> -->
+<!-- 		</property> -->
+<!-- 		<property name="jpaVendorAdapter"> -->
+<!-- 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" -->
+<!-- 				p:database="MYSQL" p:databasePlatform="org.hibernate.dialect.MySQL5Dialect" -->
+<!-- 				p:showSql="true" /> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+
+	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
+		id="transactionManager">
+
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+
+	</bean>
 </beans>

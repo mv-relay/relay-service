@@ -14,26 +14,26 @@
 
 	<!-- ========================= HIBERNATE ========================= -->
 
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="packagesToScan" value="org.landcycle.**" />
+<!-- 	<bean id="sessionFactory" -->
+<!-- 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"> -->
+<!-- 		<property name="dataSource" ref="dataSource" /> -->
+<!-- 		<property name="packagesToScan" value="org.landcycle.**" /> -->
 
-		<property name="hibernateProperties">
-			<util:map>
-				<entry key="hibernate.hbm2ddl.auto" value="validate" />
-				<entry key="hibernate.show_sql" value="true" />
-				<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
-				<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
-			</util:map>
-		</property>
-	</bean>
+<!-- 		<property name="hibernateProperties"> -->
+<!-- 			<util:map> -->
+<!-- 				<entry key="hibernate.hbm2ddl.auto" value="validate" /> -->
+<!-- 				<entry key="hibernate.show_sql" value="true" /> -->
+<!-- 				<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" /> -->
+<!-- 				<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" /> -->
+<!-- 			</util:map> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 
-	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+<!-- 	<bean id="transactionManager" -->
+<!-- 		class="org.springframework.orm.hibernate3.HibernateTransactionManager"> -->
+<!-- 		<property name="sessionFactory" ref="sessionFactory" /> -->
+<!-- 	</bean> -->
 
-	<tx:annotation-driven transaction-manager="transactionManager" />
+<!-- 	<tx:annotation-driven transaction-manager="transactionManager" /> -->
 
 </beans>

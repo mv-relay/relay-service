@@ -8,7 +8,6 @@
 		<artifactId>relay</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<groupId>org.land.recycle</groupId>
 	<artifactId>relay-business</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>landcycle-service</name>
@@ -17,7 +16,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-
 		<dependency>
 			<groupId>org.land.recycle</groupId>
 			<artifactId>relay-api</artifactId>
@@ -27,41 +25,6 @@
 			<groupId>org.land.recycle</groupId>
 			<artifactId>relay-dao</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-
-
-
-		<!-- <dependency> -->
-		<!-- <groupId>commons-fileupload</groupId> -->
-		<!-- <artifactId>commons-fileupload</artifactId> -->
-		<!-- <version>1.2.2</version> -->
-		<!-- </dependency> -->
-
-
-
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.0.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpmime</artifactId>
-			<version>4.0.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.9</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -76,8 +39,24 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
 			<type>jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

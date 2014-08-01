@@ -1,20 +1,23 @@
-package org.landcycle.dao;
+package org.landcycle.repository;
 
-import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity
-@Table(name = "User" )
-public class UserEntity implements Serializable {
+@Table(name = "User")
+public class UserEntity {
 
 	public UserEntity() {
 	}
@@ -27,7 +30,7 @@ public class UserEntity implements Serializable {
 	}
 
 	@Id
-	@Column(name = "mail", length = 80)
+	@Column(name = "mail", length = 100, unique = true, nullable = false)
 	private String mail;
 	@Column(name = "firstName", length = 80)
 	private String nome;
@@ -36,10 +39,12 @@ public class UserEntity implements Serializable {
 	@Column(name = "avatar", length = 80)
 	private String avatar;
 
-	
-	@OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="mailvend")
-	private List<ForSaleEntity> forSaleEntity;
+	// @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+	// @JoinColumn(name="mailvend")
+	@JoinColumn(name = "mailvend", referencedColumnName = "mail", updatable = false)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch (FetchMode.SELECT)
+	private Set<ForsaleEntity> forSale;
 
 	public String getMail() {
 		return mail;
@@ -73,12 +78,18 @@ public class UserEntity implements Serializable {
 		this.avatar = avatar;
 	}
 
-	public List<ForSaleEntity> getForSaleEntity() {
-		return forSaleEntity;
+	public Set<ForsaleEntity> getForSale() {
+		return forSale;
 	}
 
-	public void setForSaleEntity(List<ForSaleEntity> forSaleEntity) {
-		this.forSaleEntity = forSaleEntity;
+	public void setForSale(Set<ForsaleEntity> forSale) {
+		this.forSale = forSale;
+	}
+
+	public void addForSale(ForsaleEntity forSale) {
+		if (this.forSale == null)
+			this.forSale = new HashSet<ForsaleEntity>();
+		this.forSale.add(forSale);
 	}
 
 }

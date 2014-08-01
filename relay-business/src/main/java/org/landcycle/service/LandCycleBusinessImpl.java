@@ -8,22 +8,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
-
-import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.landcycle.api.ForSale;
 import org.landcycle.api.Position;
-import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
-import org.landcycle.dao.ForSaleDao;
-import org.landcycle.dao.ForSaleEntity;
-import org.landcycle.dao.UserDao;
-import org.landcycle.dao.UserEntity;
+import org.landcycle.repository.UserEntity;
+import org.landcycle.repository.UserRepository;
 import org.landcycle.utils.CommonUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,25 +31,27 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 
 	protected static final Logger log = Logger.getLogger(LandCycleBusinessImpl.class.getName());
 
-	@Resource
+	@Autowired
 	org.landcycle.util.ConfigurationLoader configurationLoader;
 
-	@Resource
-	UserDao userDao;
-	@Resource
-	ForSaleDao forSaleDao;
+	@Autowired
+	UserRepository userRepository;
+//	@Autowired
+//	ForSaleDao forSaleDao;
 
 	@Override
 	public UserItem saveOrUpdateSale(UserItem upload) throws Exception {
 		// TODO Auto-generated method stub
 		log.debug("Input save or update : " + CommonUtils.bean2string(upload));
 		if (upload.getForSale() != null) {
+			UserEntity uu = new UserEntity();
+			uu.setMail(upload.getUser().getMail());
 			ForSale sale = upload.getForSale();
-			ForSaleEntity forSaleEntity = new ForSaleEntity();
+			org.landcycle.repository.ForsaleEntity forSaleEntity = new org.landcycle.repository.ForsaleEntity();
 			String id = upload.getForSale().getId();
 			forSaleEntity.setImg(id);
 			forSaleEntity.setId(id);
-//			forSaleEntity.setMailvend(upload.getUser().getMail());
+			forSaleEntity.setMailvend(upload.getUser().getMail());
 			forSaleEntity.setMailacq(upload.getForSale().getMailAcq());
 			BeanUtils.copyProperties(sale, forSaleEntity, new String[] { "id" });
 			Position positio = upload.getForSale().getPosition();
@@ -60,7 +60,12 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				forSaleEntity.setLng(positio.getLng());
 			}
 			forSaleEntity.setImg(getUrlImage() + id + "." + sale.getImageType());
-			forSaleDao.save(forSaleEntity);
+			Set<org.landcycle.repository.ForsaleEntity> tmp = new HashSet<org.landcycle.repository.ForsaleEntity>();
+			tmp.add(forSaleEntity);
+			uu.setForSale(tmp);
+			log.debug("User insert : " + CommonUtils.bean2string(uu));
+//			forSaleDao.save(forSaleEntity);
+			userRepository.save(uu);
 		}
 		return upload;
 	}
@@ -167,7 +172,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	@Override
 	public List<UserItem> find(UserItem user) throws Exception {
 		// TODO Auto-generated method stub
-		ForSaleEntity forSaleEntity = new ForSaleEntity();
+		org.landcycle.repository.ForsaleEntity forSaleEntity = new org.landcycle.repository.ForsaleEntity();
 		if (user.getForSale() != null && user.getForSale().getPosition() != null) {
 			Position positio = user.getForSale().getPosition();
 			forSaleEntity.setLat(positio.getLat());
@@ -176,13 +181,14 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		if (user.getUser() != null){
 //			UserEntity u = new UserEntity();
 //			u.setMail(user.getUser().getMail());
-//			forSaleEntity.setMailvend(user.getUser().getMail());
+			forSaleEntity.setMailvend(user.getUser().getMail());
 		}
 		log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
-		List<UserEntity> resp = forSaleDao.findByQueryz(forSaleEntity);
+		Set<UserEntity> resp = userRepository.findByQuery(forSaleEntity.getLng(),forSaleEntity.getLat(),forSaleEntity.getMailvend());
+//		List<User> resp = userRepository.findAll();
 //		List<ForSaleEntity> resp = forSaleDao.findByQuery(forSaleEntity);
 		List<UserItem> response = new ArrayList<UserItem>();
-		log.debug("List<ForSaleEntity> resp : " + CommonUtils.bean2string(resp));
+		log.debug("List<UserEntity> resp : " + CommonUtils.bean2string(resp));
 //		List<ForSale> respSales = new ArrayList<ForSale>();
 //		ForSaleEntity tmp = null;
 //		UserItem tmpItem = null;

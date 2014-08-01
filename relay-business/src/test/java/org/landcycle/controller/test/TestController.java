@@ -149,7 +149,7 @@ public class TestController {
 			user.setUser(u);
 			ForSale forSale = new ForSale();
 			forSale.setDescription("test");
-			forSale.setId("fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd9");
+			forSale.setId("dddd-8fd1-4ef3-9fe8-fdaac4315fd9");
 			forSale.setImageType("jpg");
 			Position pos = new Position();
 //			pos.setLat(new Double("45.3194077").doubleValue());

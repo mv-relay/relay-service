@@ -72,15 +72,15 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Dump dei dati per la tabella 'forsale'
 --
 
-INSERT INTO Forsale VALUES('118908328e-d3e2-469b-b515-1a5e032d6a82', NULL, 'http://localhost:8080/img/webapps/img/118908328e-d3e2-469b-b515-1a5e032d6a82.jpg', 'test', NULL, 45.31940770, 'valerio.artusi@gmail.com', NULL, 9.52376820, NULL, NULL);
-INSERT INTO Forsale VALUES('228908328e-d3e2-469b-b515-1a5e032d6a82', NULL, 'http://localhost:8080/img/webapps/img/228908328e-d3e2-469b-b515-1a5e032d6a82.jpg', 'test', NULL, 45.16044240, 'valerio.artusi@gmail.com', NULL, 9.69353570, NULL, NULL);
-INSERT INTO Forsale VALUES('8908328e-d3e2-469b-b515-1a5e032d6a82', NULL, 'http://localhost:8080/img/webapps/img/8908328e-d3e2-469b-b515-1a5e032d6a82.jpg', 'test', NULL, 45.31940770, 'valerio.artusi@gmail.com', NULL, 9.52376820, NULL, NULL);
-INSERT INTO Forsale VALUES('fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd8', NULL, 'http://localhost:8080/img/webapps/img/fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd8.jpg', 'test', NULL, 45.57055440, 'massimiliano.regis@gmail.com', NULL, 8.05484050, NULL, NULL);
-INSERT INTO Forsale VALUES('fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd9', NULL, 'http://localhost:8080/img/webapps/img/fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd9.jpg', 'test', NULL, 45.57055440, 'massimiliano.regis@gmail.com', 'valerioz.artusi@gmail.com', 8.05484050, NULL, NULL);
+INSERT INTO Forsale VALUES('118908328e-d3e2-469b-b515-1a5e032d6a82', NULL, 'http://localhost:8080/img/webapps/img/118908328e-d3e2-469b-b515-1a5e032d6a82.jpg', 'test', NULL, 45.31940770, 'valerio.artusi@gmail.com', NULL, 9.52376820, NULL, NULL,0);
+INSERT INTO Forsale VALUES('228908328e-d3e2-469b-b515-1a5e032d6a82', NULL, 'http://localhost:8080/img/webapps/img/228908328e-d3e2-469b-b515-1a5e032d6a82.jpg', 'test', NULL, 45.16044240, 'valerio.artusi@gmail.com', NULL, 9.69353570, NULL, NULL,0);
+INSERT INTO Forsale VALUES('8908328e-d3e2-469b-b515-1a5e032d6a82', NULL, 'http://localhost:8080/img/webapps/img/8908328e-d3e2-469b-b515-1a5e032d6a82.jpg', 'test', NULL, 45.31940770, 'valerio.artusi@gmail.com', NULL, 9.52376820, NULL, NULL,0);
+INSERT INTO Forsale VALUES('fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd8', NULL, 'http://localhost:8080/img/webapps/img/fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd8.jpg', 'test', NULL, 45.57055440, 'massimiliano.regis@gmail.com', NULL, 8.05484050, NULL, NULL,0);
+INSERT INTO Forsale VALUES('fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd9', NULL, 'http://localhost:8080/img/webapps/img/fb0548ca-8fd1-4ef3-9fe8-fdaac4315fd9.jpg', 'test', NULL, 45.57055440, 'massimiliano.regis@gmail.com', 'valerioz.artusi@gmail.com', 8.05484050, NULL, NULL,0);
 
 --
 -- Dump dei dati per la tabella 'user'
 --
 
 INSERT INTO `User` VALUES('massimiliano.regis@gmail.com', 'max', NULL, NULL);
-INSERT INTO `User` VALUES('valerio.artusi@gmail.com', NULL, NULL, NULL);
+INSERT INTO `User` VALUES('valerio.artusi@gmail.com', 'vale', NULL, NULL);

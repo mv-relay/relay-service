@@ -1,18 +1,34 @@
-package org.landcycle.dao;
-
-import java.io.Serializable;
+package org.landcycle.repository;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "Forsale")
-public class ForSaleEntity implements Serializable {
+public class ForsaleEntity {
+	public ForsaleEntity() {
+	}
+
+	public ForsaleEntity(String id, String name, String img, String description, String tags, String mailvend,
+			String mailacq, String optional, String citta, Double lat, Double lng, int category) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.img = img;
+		this.description = description;
+		this.tags = tags;
+		this.mailvend = mailvend;
+		this.mailacq = mailacq;
+		this.optional = optional;
+		this.citta = citta;
+		this.lat = lat;
+		this.lng = lng;
+		this.category = category;
+	}
+
 	@Id
 	@Column(name = "id", length = 100)
 	private String id;
@@ -24,22 +40,20 @@ public class ForSaleEntity implements Serializable {
 	private String description;
 	@Column(name = "tags", length = 100)
 	private String tags;
-//	@Column(name = "mailvend", length = 100)
-//	private String mailvend;
+	@Column(name = "mailvend", length = 100)
+	private String mailvend;
 	@Column(name = "mailacq", length = 100)
 	private String mailacq;
 	@Column(name = "optional", length = 100)
 	private String optional;
 	@Column(name = "city", length = 150)
 	private String citta;
-	@Column(name = "lat", columnDefinition = "Decimal(10,8)")
 	private Double lat;
-	// @Column(name = "lng	", columnDefinition = "Decimal(10,8)")
 	private Double lng;
 	private int category;
 
-	 @ManyToOne
-	 private UserEntity user;
+	// @ManyToOne
+	// private User user;
 
 	public String getId() {
 		return id;
@@ -81,13 +95,13 @@ public class ForSaleEntity implements Serializable {
 		this.tags = tags;
 	}
 
-//	public String getMailvend() {
-//		return mailvend;
-//	}
-//
-//	public void setMailvend(String mailvend) {
-//		this.mailvend = mailvend;
-//	}
+	public String getMailvend() {
+		return mailvend;
+	}
+
+	public void setMailvend(String mailvend) {
+		this.mailvend = mailvend;
+	}
 
 	public String getMailacq() {
 		return mailacq;
@@ -137,12 +151,14 @@ public class ForSaleEntity implements Serializable {
 		this.category = category;
 	}
 
-	public UserEntity getUser() {
-		return user;
-	}
-
-	public void setUser(UserEntity user) {
-		this.user = user;
-	}
+	// public User getUser() {
+	// return user;
+	// }
+	//
+	// public void setUser(User user) {
+	// this.user = user;
+	// }
+	//
+	//
 
 }

@@ -2,7 +2,6 @@ package org.landcycle.controllers;
 
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -14,6 +13,7 @@ import org.landcycle.api.exception.LandcycleException;
 import org.landcycle.api.rest.JsonResponseData;
 import org.landcycle.service.LandCycleBusiness;
 import org.landcycle.utils.CommonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,14 +37,14 @@ public class LandCycleController extends BaseRestController {
 		return "OK";
 	}
 
-	@Resource
+	@Autowired
 	LandCycleBusiness landCycleBusiness;
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody
 	JsonResponseData<UserItem> saveOrUpdate(@RequestBody UserItem upload, HttpServletResponse response) {
 		try {
-			logger.debug(upload.toString());
+			logger.debug(CommonUtils.bean2string(upload));
 			landCycleBusiness.saveOrUpdateSale(upload);
 			return ariaResponse(upload);
 		} catch (Exception e) {

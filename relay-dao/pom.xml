@@ -18,47 +18,47 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>it.nexus.jarch</groupId>
-			<artifactId>jarch-deps-hibernate</artifactId>
-			<version>${jarch.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>it.nexus.jarch</groupId>
-			<artifactId>jarch-deps-spring</artifactId>
-			<version>${jarch.version}</version>
-		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>it.nexus.jarch</groupId> -->
-<!-- 			<artifactId>jarch-deps-spring-jms</artifactId> -->
-<!-- 			<version>${jarch.version}</version> -->
-<!-- 		</dependency> -->
-		<dependency>
-			<groupId>it.nexus.jarch</groupId>
-			<artifactId>jarch-deps-jpa</artifactId>
-			<version>${jarch.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>it.nexus.jarch</groupId>
-			<artifactId>jarch-deps-jpa-provided</artifactId>
-			<version>${jarch.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjtools</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
 <!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate</groupId> -->
-<!-- 			<artifactId>hibernate-entitymanager</artifactId> -->
-<!-- 			<version>3.3.2.GA</version> -->
+<!-- 			<groupId>javax.mail</groupId> -->
+<!-- 			<artifactId>mail</artifactId> -->
+<!-- 			<version>1.4.3</version> -->
 <!-- 		</dependency> -->
 <!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework.data</groupId> -->
-<!-- 			<artifactId>spring-data-jpa</artifactId> -->
-<!-- 			<version>1.6.0.RELEASE</version> -->
+<!-- 			<groupId>org.apache.velocity</groupId> -->
+<!-- 			<artifactId>velocity</artifactId> -->
+<!-- 			<version>1.7</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.thoughtworks.xstream</groupId> -->
+<!-- 			<artifactId>xstream</artifactId> -->
+<!-- 			<version>1.4.7</version> -->
 <!-- 		</dependency> -->
 	</dependencies>
-	
 </project>

@@ -15,17 +15,6 @@
 	<name>landcycle-web Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
-		<!-- deps -->
-		<!-- <dependency> -->
-		<!-- <groupId>it.nexus.jarch</groupId> -->
-		<!-- <artifactId>jarch-deps-cxf</artifactId> -->
-		<!-- <version>${jarch.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>it.nexus.jarch</groupId> -->
-		<!-- <artifactId>jarch-deps-spring-web</artifactId> -->
-		<!-- <version>${jarch.version}</version> -->
-		<!-- </dependency> -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -37,21 +26,11 @@
 			<artifactId>relay-business</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 		</dependency>
-
-
-
-		<!-- <dependency> -->
-		<!-- <groupId>com.h2database</groupId> -->
-		<!-- <artifactId>h2</artifactId> -->
-		<!-- <version>1.4.178</version> -->
-		<!-- </dependency> -->
-
 	</dependencies>
 
 	<build>
