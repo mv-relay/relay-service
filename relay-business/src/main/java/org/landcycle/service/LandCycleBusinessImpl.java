@@ -16,7 +16,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.landcycle.api.ForSale;
 import org.landcycle.api.Position;
+import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
+import org.landcycle.repository.ForsaleEntity;
 import org.landcycle.repository.UserEntity;
 import org.landcycle.repository.UserRepository;
 import org.landcycle.utils.CommonUtils;
@@ -185,61 +187,23 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		}
 		log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
 		Set<UserEntity> resp = userRepository.findByQuery(forSaleEntity.getLng(),forSaleEntity.getLat(),forSaleEntity.getMailvend());
-//		List<User> resp = userRepository.findAll();
-//		List<ForSaleEntity> resp = forSaleDao.findByQuery(forSaleEntity);
 		List<UserItem> response = new ArrayList<UserItem>();
+		for (UserEntity userEntity : resp) {
+			UserItem tmp = new UserItem();
+			User u = new User();
+			u.setMail(userEntity.getMail());
+			u.setFirstName(userEntity.getNome());
+			u.setSecondName(userEntity.getCognome());
+			Set<ForsaleEntity> ee = userEntity.getForSale();
+			for (ForsaleEntity forsaleEntity2 : ee) {
+				ForSale ff = new ForSale();
+				BeanUtils.copyProperties(forsaleEntity2,ff);
+				tmp.addSale(ff);
+			}
+			response.add(tmp);
+		}
 		log.debug("List<UserEntity> resp : " + CommonUtils.bean2string(resp));
-//		List<ForSale> respSales = new ArrayList<ForSale>();
-//		ForSaleEntity tmp = null;
-//		UserItem tmpItem = null;
-//		User tmpuser = null;
-//		for (int i = 0; i < resp.size(); i++) {
-//			if (tmp == null) {
-//				tmp = resp.get(i);
-//				continue;
-//			}
-//
-//			if (!tmp.getMailvend().equals(resp.get(i).getMailvend())) {
-//				tmpItem = new UserItem();
-//				tmpuser = new User();
-//				UserEntity ent = userDao.findOne(tmp.getMailvend());
-//				BeanUtils.copyProperties(ent, tmpuser);
-//				tmpItem.setUser(tmpuser);
-//				tmpItem.setForSales(respSales);
-//				respSales = new ArrayList<ForSale>();
-//				// tmpmail = tmp.getMailvend();
-//				response.add(tmpItem);
-//				tmp = resp.get(i);
-//			} else {
-//				ForSale tmpFor = new ForSale();
-//				BeanUtils.copyProperties(tmp, tmpFor);
-//				respSales.add(tmpFor);
-//				Position pos = new Position();
-//				pos.setLat(tmp.getLat());
-//				pos.setLng(tmp.getLng());
-//				tmpFor.setPosition(pos);
-//				tmp = resp.get(i);
-//			}
-//			// // ultimo giro
-//			if (i == (resp.size() - 1)) {
-//				tmpItem = new UserItem();
-//				tmpuser = new User();
-//				UserEntity ent = userDao.findOne(tmp.getMailvend());
-//				log.debug("USER : " + CommonUtils.bean2string(ent));
-//				BeanUtils.copyProperties(ent, tmpuser);
-//				tmpItem.setUser(tmpuser);
-//				log.debug("tmpItem : " + CommonUtils.bean2string(tmpItem));
-//				ForSale tmpFor = new ForSale();
-//				BeanUtils.copyProperties(tmp, tmpFor);
-//				respSales.add(tmpFor);
-//				Position pos = new Position();
-//				pos.setLat(tmp.getLat());
-//				pos.setLng(tmp.getLng());
-//				tmpFor.setPosition(pos);
-//				tmpItem.setForSales(respSales);
-//				response.add(tmpItem);
-//			}
-//		}
+
 		return response;
 	}
 
