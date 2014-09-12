@@ -1,18 +1,24 @@
 package org.landcycle.repository;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Forsale")
-public class ForsaleEntity {
-	public ForsaleEntity() {
+@Table(name = "Taggable")
+public class TaggableEntity {
+	public TaggableEntity() {
 	}
 
-	public ForsaleEntity(String id, String name, String img, String description, String tags, String mailvend,
+	public TaggableEntity(String id, String name, String img, String description, String tags, String user,
 			String mailacq, String optional, String citta, Double lat, Double lng, int category) {
 		super();
 		this.id = id;
@@ -20,7 +26,7 @@ public class ForsaleEntity {
 		this.img = img;
 		this.description = description;
 		this.tags = tags;
-		this.mailvend = mailvend;
+		this.user = user;
 		this.mailacq = mailacq;
 		this.optional = optional;
 		this.citta = citta;
@@ -29,6 +35,7 @@ public class ForsaleEntity {
 		this.category = category;
 	}
 
+	
 	@Id
 	@Column(name = "id", length = 100)
 	private String id;
@@ -40,8 +47,8 @@ public class ForsaleEntity {
 	private String description;
 	@Column(name = "tags", length = 100)
 	private String tags;
-	@Column(name = "mailvend", length = 100)
-	private String mailvend;
+	@Column(name = "user", length = 100)
+	private String user;
 	@Column(name = "mailacq", length = 100)
 	private String mailacq;
 	@Column(name = "optional", length = 100)
@@ -52,9 +59,9 @@ public class ForsaleEntity {
 	private Double lng;
 	private int category;
 
-	// @ManyToOne
-	// private User user;
-
+	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<LikeEntity> likes;
 	public String getId() {
 		return id;
 	}
@@ -95,12 +102,12 @@ public class ForsaleEntity {
 		this.tags = tags;
 	}
 
-	public String getMailvend() {
-		return mailvend;
+	public String getUser() {
+		return user;
 	}
 
-	public void setMailvend(String mailvend) {
-		this.mailvend = mailvend;
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	public String getMailacq() {
@@ -151,14 +158,18 @@ public class ForsaleEntity {
 		this.category = category;
 	}
 
-	// public User getUser() {
-	// return user;
-	// }
-	//
-	// public void setUser(User user) {
-	// this.user = user;
-	// }
-	//
-	//
+	public Set<LikeEntity> getLikes() {
+		return likes;
+	}
+
+	public void setLikes(Set<LikeEntity> likes) {
+		this.likes = likes;
+	}
+
+	public void addForSale(LikeEntity likes) {
+		if (this.likes == null)
+			this.likes = new HashSet<LikeEntity>();
+		this.likes.add(likes);
+	}
 
 }

@@ -5,8 +5,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.landcycle.api.ForSale;
+import org.landcycle.api.LikeItem;
 import org.landcycle.api.Position;
+import org.landcycle.api.Taggable;
 import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
 import org.landcycle.api.exception.LandcycleException;
@@ -42,10 +43,10 @@ public class LandCycleController extends BaseRestController {
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody
-	JsonResponseData<UserItem> saveOrUpdate(@RequestBody UserItem upload, HttpServletResponse response) {
+	JsonResponseData<UserItem> saveOrUpdate(@RequestBody UserItem upload) {
 		try {
 			logger.debug(CommonUtils.bean2string(upload));
-			landCycleBusiness.saveOrUpdateSale(upload);
+			landCycleBusiness.saveOrUpdateTaggable(upload);
 			return ariaResponse(upload);
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);
@@ -57,19 +58,22 @@ public class LandCycleController extends BaseRestController {
 	public @ResponseBody
 	JsonResponseData<UserItem> findAround(@RequestParam(value = "lat", required = false) String lat,
 			@RequestParam(value = "lng", required = false) String lng,
-			@RequestParam(value = "mailvend", required = false) String mailvend, HttpServletResponse response) {
+			@RequestParam(value = "user", required = false) String user,
+			@RequestParam(value = "tags", required = false) String tags,HttpServletResponse response) {
 		try {
 			UserItem item = new UserItem();
 			if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
 				Position pos = new Position();
 				pos.setLat(Double.parseDouble(lat));
 				pos.setLng(Double.parseDouble(lng));
-				ForSale sale = new ForSale();
+				Taggable sale = new Taggable();
 				sale.setPosition(pos);
+				if(tags != null && tags.length() > 0)
+					sale.setTags(tags.split(","));
 				User u = new User();
-				u.setMail(mailvend);
+				u.setMail(user);
 				item.setUser(u);
-				item.setForSale(sale);
+				item.setTaggable(sale);
 			}
 			List<UserItem> items = landCycleBusiness.find(item);
 			logger.debug("findAround : " + CommonUtils.bean2string(items));
@@ -88,8 +92,19 @@ public class LandCycleController extends BaseRestController {
 	public @ResponseBody
 	JsonResponseData<UserItem> update(@RequestBody UserItem upload, HttpServletResponse response) {
 		try {
-			landCycleBusiness.saveOrUpdateSale(upload);
+			landCycleBusiness.saveOrUpdateTaggable(upload);
 			return ariaResponse(upload);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	@RequestMapping(value = "/Like ", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonResponseData<LikeItem> like(@RequestBody LikeItem like, HttpServletResponse response) {
+		try {
+			landCycleBusiness.saveLike(like);
+			return ariaResponse(like);
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);
 			throw new LandcycleException(e);
@@ -115,12 +130,12 @@ public class LandCycleController extends BaseRestController {
 				throw new LandcycleException("0001", "Formato non consentito");
 			}
 			UserItem item = new UserItem();
-			ForSale forSale = new ForSale();
+			Taggable forSale = new Taggable();
 			String fileName = file.getOriginalFilename();
 			forSale.setImageType(fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()));
 			// forSale.setStream(new String(file.getBytes(), "UTF-8"));
 			forSale.setStreams(file.getBytes());
-			item.setForSale(forSale);
+			item.setTaggable(forSale);
 			landCycleBusiness.upload(item);
 			return ariaResponse(item);
 		} catch (LandcycleException e) {

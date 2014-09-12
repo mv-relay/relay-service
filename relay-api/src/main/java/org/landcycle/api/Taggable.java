@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class ForSale implements Serializable {
+public class Taggable implements Serializable {
 	/**
 	 * 
 	 */
@@ -19,6 +19,7 @@ public class ForSale implements Serializable {
 	private String description;
 	private String[] tags;
 	private Position position;
+	private LikeItem like;
 
 	public byte[] getStreams() {
 		return streams;
@@ -99,4 +100,13 @@ public class ForSale implements Serializable {
 	public void setPosition(Position position) {
 		this.position = position;
 	}
+
+	public LikeItem getLike() {
+		return like;
+	}
+
+	public void setLike(LikeItem like) {
+		this.like = like;
+	}
+
 }

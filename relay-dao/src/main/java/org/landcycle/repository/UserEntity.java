@@ -41,10 +41,10 @@ public class UserEntity {
 
 	// @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
 	// @JoinColumn(name="mailvend")
-	@JoinColumn(name = "mailvend", referencedColumnName = "mail", updatable = false)
+	@JoinColumn(name = "user", referencedColumnName = "mail", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Fetch (FetchMode.SELECT)
-	private Set<ForsaleEntity> forSale;
+	private Set<TaggableEntity> taggable;
 
 	public String getMail() {
 		return mail;
@@ -78,18 +78,20 @@ public class UserEntity {
 		this.avatar = avatar;
 	}
 
-	public Set<ForsaleEntity> getForSale() {
-		return forSale;
+	
+
+	public Set<TaggableEntity> getTaggable() {
+		return taggable;
 	}
 
-	public void setForSale(Set<ForsaleEntity> forSale) {
-		this.forSale = forSale;
+	public void setTaggable(Set<TaggableEntity> taggable) {
+		this.taggable = taggable;
 	}
 
-	public void addForSale(ForsaleEntity forSale) {
-		if (this.forSale == null)
-			this.forSale = new HashSet<ForsaleEntity>();
-		this.forSale.add(forSale);
+	public void addForSale(TaggableEntity taggable) {
+		if (this.taggable == null)
+			this.taggable = new HashSet<TaggableEntity>();
+		this.taggable.add(taggable);
 	}
 
 }

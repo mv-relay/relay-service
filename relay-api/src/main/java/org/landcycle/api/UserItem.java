@@ -11,11 +11,11 @@ public class UserItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private User user;
-	private List<ForSale> forSales;
-	private ForSale forSale;
-
-	public List<ForSale> getForSales() {
-		return forSales;
+	private List<Taggable> taggables;
+	private Taggable taggable;
+	
+	public List<Taggable> getForSales() {
+		return taggables;
 	}
 
 	public User getUser() {
@@ -26,21 +26,21 @@ public class UserItem implements Serializable {
 		this.user = user;
 	}
 
-	public void setForSales(List<ForSale> forSales) {
-		this.forSales = forSales;
+	public void setTaggables(List<Taggable> taggables) {
+		this.taggables = taggables;
 	}
 
-	public ForSale getForSale() {
-		return forSale;
+	public Taggable getTaggable() {
+		return taggable;
 	}
 
-	public void setForSale(ForSale forSale) {
-		this.forSale = forSale;
+	public void setTaggable(Taggable taggable) {
+		this.taggable = taggable;
 	}
 
-	public void addSale(ForSale forSale) {
-		if (this.forSales == null)
-			this.forSales = new ArrayList<ForSale>();
-		this.forSales.add(forSale);
+	public void addTag(Taggable tag) {
+		if (this.taggables == null)
+			this.taggables = new ArrayList<Taggable>();
+		this.taggables.add(tag);
 	}
 }
