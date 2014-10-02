@@ -26,7 +26,7 @@ public class RestFilter implements Filter{
 		if(response instanceof HttpServletResponse ){
 			HttpServletResponse resp = ((HttpServletResponse) response);
 			resp.setHeader("Access-Control-Allow-Origin", "*");
-		}
+			resp.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");		}
 		chain.doFilter(request, response);
 		
 	}

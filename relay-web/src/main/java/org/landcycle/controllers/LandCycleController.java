@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.landcycle.api.LikeItem;
 import org.landcycle.api.Position;
 import org.landcycle.api.Taggable;
-import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
 import org.landcycle.api.exception.LandcycleException;
 import org.landcycle.api.rest.JsonResponseData;
@@ -18,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,11 +54,18 @@ public class LandCycleController extends BaseRestController {
 		}
 	}
 
+	@RequestMapping(value = { "", "/" }, method = RequestMethod.OPTIONS)
+	public @ResponseBody
+	JsonResponseData<UserItem> options()
+	{
+		return ariaResponse(new UserItem()); 
+	}
+	
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	public @ResponseBody
 	JsonResponseData<UserItem> findAround(@RequestParam(value = "lat", required = false) String lat,
 			@RequestParam(value = "lng", required = false) String lng,
-			@RequestParam(value = "user", required = false) String user,
+//			@RequestParam(value = "user", required = false) String user,
 			@RequestParam(value = "tags", required = false) String tags,HttpServletResponse response) {
 		try {
 			UserItem item = new UserItem();
@@ -70,9 +77,9 @@ public class LandCycleController extends BaseRestController {
 				sale.setPosition(pos);
 				if(tags != null && tags.length() > 0)
 					sale.setTags(tags.split(","));
-				User u = new User();
-				u.setMail(user);
-				item.setUser(u);
+//				User u = new User();
+//				u.setMail(user);
+//				item.setUser(u);
 				item.setTaggable(sale);
 			}
 			List<UserItem> items = landCycleBusiness.find(item);
@@ -130,10 +137,45 @@ public class LandCycleController extends BaseRestController {
 				throw new LandcycleException("0001", "Formato non consentito");
 			}
 			UserItem item = new UserItem();
+			Taggable taggable = new Taggable();
+			String fileName = file.getOriginalFilename();
+			taggable.setImageType(fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()));
+			taggable.setStreams(file.getBytes());
+			item.setTaggable(taggable);
+			landCycleBusiness.upload(item);
+			return ariaResponse(item);
+		} catch (LandcycleException e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw e;
+		} catch (Exception e) {
+			logger.error("UNHANDLED EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	
+	@RequestMapping(value = "/Upload/{id}", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonResponseData<UserItem> uploadId(@ModelAttribute("uploadedFile") FileUpload uploadedFile,@PathVariable("id") String id, BindingResult result,
+			HttpServletResponse response) {
+		try {
+			MultipartFile file = uploadedFile.getFile();
+			String ctype = file.getContentType();
+			logger.debug("Formato  " + ctype);
+			long size = file.getSize();
+			System.out.println("SIZE FILE : " + size);
+			if (size > SIZE_AVATAR) {
+				throw new LandcycleException("002", "Dimensione non consentita");
+			}
+			if (ctype != null
+					&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif")
+							&& !ctype.equals("image/jpg") && !ctype.equals("image/pjpeg"))) {
+				throw new LandcycleException("0001", "Formato non consentito");
+			}
+			UserItem item = new UserItem();
 			Taggable forSale = new Taggable();
+			forSale.setId(id);
 			String fileName = file.getOriginalFilename();
 			forSale.setImageType(fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()));
-			// forSale.setStream(new String(file.getBytes(), "UTF-8"));
 			forSale.setStreams(file.getBytes());
 			item.setTaggable(forSale);
 			landCycleBusiness.upload(item);

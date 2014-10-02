@@ -13,6 +13,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -112,21 +113,25 @@ public class TestController {
 	public void sendFile() {
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://localhost:8080/land-web/rest/land/Upload");
+			HttpPost httppost = new HttpPost("http://localhost:8080/relay-service-web/rest/land/Upload");
+//			HttpPost httppost = new HttpPost("http://95.110.224.34:8080//land-web/rest/land/Upload");
 			String fileName = "/Users/valerio/XDOCUMENTI/IMMAGINI/__MOTO/696/03.jpg";
 			FileBody bin = new FileBody(new File(fileName));
-			StringBody comment = new StringBody("Filename: " + fileName);
+//			StringBody comment = new StringBody("Filename: " + fileName);
 			httppost.addHeader("Content-type", "multipart/form-data");
 			MultipartEntity reqEntity = new MultipartEntity();
 			reqEntity.addPart("file", bin);
-			reqEntity.addPart("file_name", new StringBody(""));
-			reqEntity.addPart("folder_id", new StringBody(""));
-			reqEntity.addPart("description", new StringBody(""));
-			reqEntity.addPart("source", new StringBody(""));
-			reqEntity.addPart("file_type", new StringBody("jpg"));
-			// reqEntity.addPart("data", bin);
+//			reqEntity.addPart("file_name", new StringBody(""));
+//			reqEntity.addPart("folder_id", new StringBody(""));
+//			reqEntity.addPart("description", new StringBody(""));
+//			reqEntity.addPart("source", new StringBody(""));
+//			reqEntity.addPart("file_type", new StringBody("jpg"));
+//			 reqEntity.addPart("data", bin);
 
 			// reqEntity.addPart("comment", comment);
+			 
+			
+					
 			httppost.setEntity(reqEntity);
 
 			HttpResponse response = httpclient.execute(httppost);
@@ -173,7 +178,7 @@ public class TestController {
 		try {
 			UserItem user = new UserItem();
 			User u = new User();
-			u.setMail("massimiliano.regis@gmail.com");
+			u.setMail("valerio.artusi@gmail.com");
 			user.setUser(u);
 			Taggable forSale = new Taggable();
 			forSale.setDescription("test");
@@ -192,7 +197,8 @@ public class TestController {
 			System.out.println(jjson);
 			StringEntity input = new StringEntity(jjson);
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land");
+//			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land");
+			HttpPost postRequest = new HttpPost("http://95.110.224.34:8080/relay-service-web/rest/land");
 
 			// input.setContentType("application/json");
 			postRequest.addHeader("Content-Type", "application/json");

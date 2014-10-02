@@ -22,6 +22,7 @@ import org.landcycle.api.UserItem;
 import org.landcycle.repository.LikeEntity;
 import org.landcycle.repository.LikeRepository;
 import org.landcycle.repository.TaggableEntity;
+import org.landcycle.repository.TaggableRepository;
 import org.landcycle.repository.UserEntity;
 import org.landcycle.repository.UserRepository;
 import org.landcycle.utils.CommonUtils;
@@ -40,11 +41,14 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	org.landcycle.util.ConfigurationLoader configurationLoader;
 
 	@Autowired
+	TaggableRepository taggableRepository;
+	@Autowired
 	UserRepository userRepository;
 	@Autowired
 	LikeRepository likeRepository;
-//	@Autowired
-//	ForSaleDao forSaleDao;
+
+	// @Autowired
+	// ForSaleDao forSaleDao;
 
 	@Override
 	public UserItem saveOrUpdateTaggable(UserItem upload) throws Exception {
@@ -59,7 +63,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			taggableEntity.setImg(id);
 			taggableEntity.setId(id);
 			taggableEntity.setUser(upload.getUser().getMail());
-//			forSaleEntity.setMailacq(upload.getForSale().getMailAcq());
+			// forSaleEntity.setMailacq(upload.getForSale().getMailAcq());
 			BeanUtils.copyProperties(taggable, taggableEntity, new String[] { "id" });
 			Position positio = upload.getTaggable().getPosition();
 			if (positio != null) {
@@ -71,7 +75,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			tmp.add(taggableEntity);
 			uu.setTaggable(tmp);
 			log.debug("User insert : " + CommonUtils.bean2string(uu));
-//			forSaleDao.save(forSaleEntity);
+			// forSaleDao.save(forSaleEntity);
 			userRepository.save(uu);
 		}
 		return upload;
@@ -185,11 +189,11 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			forSaleEntity.setLat(positio.getLat());
 			forSaleEntity.setLng(positio.getLng());
 		}
-		if (user.getUser() != null){
-			forSaleEntity.setUser(user.getUser().getMail());
-		}
+		// if (user.getUser() != null){
+		// forSaleEntity.setUser(user.getUser().getMail());
+		// }
 		log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
-		Set<UserEntity> resp = userRepository.findByQuery(forSaleEntity.getLng(),forSaleEntity.getLat(),forSaleEntity.getUser());
+		Set<UserEntity> resp = userRepository.findByQuery(forSaleEntity.getLng(), forSaleEntity.getLat());
 		List<UserItem> response = new ArrayList<UserItem>();
 		for (UserEntity userEntity : resp) {
 			UserItem tmp = new UserItem();
@@ -197,10 +201,11 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			u.setMail(userEntity.getMail());
 			u.setFirstName(userEntity.getNome());
 			u.setSecondName(userEntity.getCognome());
+			tmp.setUser(u);
 			Set<TaggableEntity> ee = userEntity.getTaggable();
 			for (TaggableEntity forsaleEntity2 : ee) {
 				Taggable ff = new Taggable();
-				BeanUtils.copyProperties(forsaleEntity2,ff);
+				BeanUtils.copyProperties(forsaleEntity2, ff);
 				Position pos = new Position();
 				pos.setLat(forsaleEntity2.getLat());
 				pos.setLng(forsaleEntity2.getLng());
@@ -224,6 +229,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				getDirUpload());
 		log.debug("##############fileName : " + fileName);
 		writeFile(upload.getTaggable().getStreams(), fileName);
+		
 		// clean output
 		upload.getTaggable().setStreams(null);
 		return upload;
@@ -247,7 +253,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		LikeEntity l = new LikeEntity();
 		l.setId(like.getId());
 		l.setUser(like.getUser());
-		LikeEntity  likez = likeRepository.save(l);
+		LikeEntity likez = likeRepository.save(l);
 		return like;
 	}
 }
