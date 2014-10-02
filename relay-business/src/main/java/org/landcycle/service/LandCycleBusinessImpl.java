@@ -222,14 +222,18 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	@Override
 	public UserItem upload(UserItem upload) throws Exception {
 		UUID uuidFile = UUID.randomUUID();
-		upload.getTaggable().setId(uuidFile.toString());
-		// upload.setForSale(forSale);
-		// }
+		if (upload.getTaggable().getId() != null && !upload.getTaggable().getId().isEmpty()) {
+			TaggableEntity te = new TaggableEntity();
+			te.setId(upload.getTaggable().getId());
+			taggableRepository.save(te);
+		} else {
+			upload.getTaggable().setId(uuidFile.toString());
+		}
 		String fileName = uploadFileName(upload.getTaggable().getImageType(), upload.getTaggable().getId(),
 				getDirUpload());
 		log.debug("##############fileName : " + fileName);
 		writeFile(upload.getTaggable().getStreams(), fileName);
-		
+
 		// clean output
 		upload.getTaggable().setStreams(null);
 		return upload;

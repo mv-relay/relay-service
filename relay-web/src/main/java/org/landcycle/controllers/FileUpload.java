@@ -4,11 +4,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class FileUpload {
 	MultipartFile file;
-//	@NotNull
-//	private String fileName;
+
 	private String userId = "";
 	private String type = "";
 	private String channel = "";
+	private String id = "";
+	private String stream = "";
 
 	/** The path. */
 	private String path = "";
@@ -20,14 +21,6 @@ public class FileUpload {
 	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
-
-//	public String getFileName() {
-//		return fileName;
-//	}
-//
-//	public void setFileName(String fileName) {
-//		this.fileName = fileName;
-//	}
 
 	public String getUserId() {
 		return userId;
@@ -59,6 +52,22 @@ public class FileUpload {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getStream() {
+		return stream;
+	}
+
+	public void setStream(String stream) {
+		this.stream = stream;
 	}
 
 }

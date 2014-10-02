@@ -1,13 +1,20 @@
 package org.landcycle.controllers;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.landcycle.api.LikeItem;
 import org.landcycle.api.Position;
 import org.landcycle.api.Taggable;
+import org.landcycle.api.TaggableFile;
 import org.landcycle.api.UserItem;
 import org.landcycle.api.exception.LandcycleException;
 import org.landcycle.api.rest.JsonResponseData;
@@ -56,17 +63,15 @@ public class LandCycleController extends BaseRestController {
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.OPTIONS)
 	public @ResponseBody
-	JsonResponseData<UserItem> options()
-	{
-		return ariaResponse(new UserItem()); 
+	JsonResponseData<UserItem> options() {
+		return ariaResponse(new UserItem());
 	}
-	
+
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	public @ResponseBody
-	JsonResponseData<UserItem> findAround(@RequestParam(value = "lat", required = false) String lat,
-			@RequestParam(value = "lng", required = false) String lng,
-//			@RequestParam(value = "user", required = false) String user,
-			@RequestParam(value = "tags", required = false) String tags,HttpServletResponse response) {
+	JsonResponseData<UserItem> findAround(@RequestParam(value = "lat", required = false) String lat, @RequestParam(value = "lng", required = false) String lng,
+	// @RequestParam(value = "user", required = false) String user,
+			@RequestParam(value = "tags", required = false) String tags, HttpServletResponse response) {
 		try {
 			UserItem item = new UserItem();
 			if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
@@ -75,11 +80,11 @@ public class LandCycleController extends BaseRestController {
 				pos.setLng(Double.parseDouble(lng));
 				Taggable sale = new Taggable();
 				sale.setPosition(pos);
-				if(tags != null && tags.length() > 0)
+				if (tags != null && tags.length() > 0)
 					sale.setTags(tags.split(","));
-//				User u = new User();
-//				u.setMail(user);
-//				item.setUser(u);
+				// User u = new User();
+				// u.setMail(user);
+				// item.setUser(u);
 				item.setTaggable(sale);
 			}
 			List<UserItem> items = landCycleBusiness.find(item);
@@ -106,6 +111,7 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
+
 	@RequestMapping(value = "/Like ", method = RequestMethod.POST)
 	public @ResponseBody
 	JsonResponseData<LikeItem> like(@RequestBody LikeItem like, HttpServletResponse response) {
@@ -115,6 +121,56 @@ public class LandCycleController extends BaseRestController {
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);
 			throw new LandcycleException(e);
+		}
+	}
+
+	@RequestMapping(value = "/UploadStream", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonResponseData<UserItem> uploadStream(@RequestBody TaggableFile uploadedFile, HttpServletResponse response) {
+		InputStream is = null;
+		BufferedInputStream bis = null;
+		ByteArrayInputStream bais = null;
+		try {
+			Taggable taggable = new Taggable();
+
+			taggable.setStreams(Base64.decodeBase64(uploadedFile.getStream().getBytes()));
+			bais = new ByteArrayInputStream(taggable.getStreams());
+			bis = new BufferedInputStream(bais);
+			is = bis;
+			String ctype = URLConnection.guessContentTypeFromStream(is);
+			int size = taggable.getStreams().length;
+			if (size > SIZE_AVATAR) {
+				throw new LandcycleException("002", "Dimensione non consentita");
+			}
+			if (ctype != null
+					&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
+							.equals("image/pjpeg"))) {
+				throw new LandcycleException("0001", "Formato non consentito");
+			}
+
+			UserItem item = new UserItem();
+			item.setTaggable(taggable);
+			taggable.setImageType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
+			taggable.setId(uploadedFile.getId());
+			landCycleBusiness.upload(item);
+			return ariaResponse(item);
+		} catch (LandcycleException e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw e;
+		} catch (Exception e) {
+			logger.error("UNHANDLED EXCEPTION", e);
+			throw new LandcycleException(e);
+		} finally {
+			if (is != null && bis != null && bais != null) {
+				try {
+					bais.close();
+					bis.close();
+					is.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+
+				}
+			}
 		}
 	}
 
@@ -132,12 +188,13 @@ public class LandCycleController extends BaseRestController {
 				throw new LandcycleException("002", "Dimensione non consentita");
 			}
 			if (ctype != null
-					&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif")
-							&& !ctype.equals("image/jpg") && !ctype.equals("image/pjpeg"))) {
+					&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
+							.equals("image/pjpeg"))) {
 				throw new LandcycleException("0001", "Formato non consentito");
 			}
 			UserItem item = new UserItem();
 			Taggable taggable = new Taggable();
+//			taggable.setId(id);
 			String fileName = file.getOriginalFilename();
 			taggable.setImageType(fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()));
 			taggable.setStreams(file.getBytes());
@@ -152,10 +209,10 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = "/Upload/{id}", method = RequestMethod.POST)
 	public @ResponseBody
-	JsonResponseData<UserItem> uploadId(@ModelAttribute("uploadedFile") FileUpload uploadedFile,@PathVariable("id") String id, BindingResult result,
+	JsonResponseData<UserItem> uploadId(@ModelAttribute("uploadedFile") FileUpload uploadedFile, @PathVariable("id") String id, BindingResult result,
 			HttpServletResponse response) {
 		try {
 			MultipartFile file = uploadedFile.getFile();
@@ -167,17 +224,17 @@ public class LandCycleController extends BaseRestController {
 				throw new LandcycleException("002", "Dimensione non consentita");
 			}
 			if (ctype != null
-					&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif")
-							&& !ctype.equals("image/jpg") && !ctype.equals("image/pjpeg"))) {
+					&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
+							.equals("image/pjpeg"))) {
 				throw new LandcycleException("0001", "Formato non consentito");
 			}
 			UserItem item = new UserItem();
-			Taggable forSale = new Taggable();
-			forSale.setId(id);
+			Taggable taggable = new Taggable();
+			taggable.setId(id);
 			String fileName = file.getOriginalFilename();
-			forSale.setImageType(fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()));
-			forSale.setStreams(file.getBytes());
-			item.setTaggable(forSale);
+			taggable.setImageType(fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()));
+			taggable.setStreams(file.getBytes());
+			item.setTaggable(taggable);
 			landCycleBusiness.upload(item);
 			return ariaResponse(item);
 		} catch (LandcycleException e) {

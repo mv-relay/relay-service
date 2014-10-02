@@ -13,11 +13,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -63,36 +61,23 @@ public class TestController {
 			// cookieStore.addCookie(cookie);
 			// ((AbstractHttpClient) client).setCookieStore(cookieStore);
 
-			UserItem user = new UserItem();
-			User u = new User();
-			u.setMail("valerio.artusi");
-			u.setFirstName("valerio");
-			user.setUser(u);
-			Taggable forSale = new Taggable();
-			forSale.setDescription("test");
-			forSale.setStream(b64file);
+			TaggableFile fp = new TaggableFile();
+			
+			fp.setStream(b64file);
 
-			Position pos = new Position();
-			pos.setLat(new Double("45.3194077").doubleValue());
-			pos.setLng(new Double("9.5237682").doubleValue());
-			// user.setPosition(pos);
-			user.setTaggable(forSale);
+			fp.setId("9999999");
 			ObjectMapper mapper = new ObjectMapper();
-			String jjson = mapper.writeValueAsString(user);
-			StringEntity input = new StringEntity(jjson);
-
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpPost postRequest = new HttpPost("http://localhost:8080/land-web/rest/land");
-
-			// input.setContentType("application/json");
+			String jjson = mapper.writeValueAsString(fp);
+			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land/UploadStream");
 			postRequest.addHeader("Content-Type", "application/json");
+			StringEntity input = new StringEntity(jjson);
 			postRequest.setEntity(input);
-
+			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpResponse response = httpClient.execute(postRequest);
-
-			if (response.getStatusLine().getStatusCode() != 201) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
-			}
+			// if (response.getStatusLine().getStatusCode() != 201) {
+			// throw new RuntimeException("Failed : HTTP error code : "
+			// + response.getStatusLine().getStatusCode());
+			// }
 
 			BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 
@@ -101,8 +86,6 @@ public class TestController {
 			while ((output = br.readLine()) != null) {
 				System.out.println(output);
 			}
-
-			httpClient.getConnectionManager().shutdown();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,24 +97,23 @@ public class TestController {
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost("http://localhost:8080/relay-service-web/rest/land/Upload");
-//			HttpPost httppost = new HttpPost("http://95.110.224.34:8080//land-web/rest/land/Upload");
+			// HttpPost httppost = new
+			// HttpPost("http://95.110.224.34:8080//land-web/rest/land/Upload");
 			String fileName = "/Users/valerio/XDOCUMENTI/IMMAGINI/__MOTO/696/03.jpg";
 			FileBody bin = new FileBody(new File(fileName));
-//			StringBody comment = new StringBody("Filename: " + fileName);
+			// StringBody comment = new StringBody("Filename: " + fileName);
 			httppost.addHeader("Content-type", "multipart/form-data");
 			MultipartEntity reqEntity = new MultipartEntity();
 			reqEntity.addPart("file", bin);
-//			reqEntity.addPart("file_name", new StringBody(""));
-//			reqEntity.addPart("folder_id", new StringBody(""));
-//			reqEntity.addPart("description", new StringBody(""));
-//			reqEntity.addPart("source", new StringBody(""));
-//			reqEntity.addPart("file_type", new StringBody("jpg"));
-//			 reqEntity.addPart("data", bin);
+			// reqEntity.addPart("file_name", new StringBody(""));
+			// reqEntity.addPart("folder_id", new StringBody(""));
+			// reqEntity.addPart("description", new StringBody(""));
+			// reqEntity.addPart("source", new StringBody(""));
+			// reqEntity.addPart("file_type", new StringBody("jpg"));
+			// reqEntity.addPart("data", bin);
 
 			// reqEntity.addPart("comment", comment);
-			 
-			
-					
+
 			httppost.setEntity(reqEntity);
 
 			HttpResponse response = httpclient.execute(httppost);
@@ -141,6 +123,7 @@ public class TestController {
 
 		}
 	}
+
 	@Test
 	public void testLike() {
 		try {
@@ -182,7 +165,7 @@ public class TestController {
 			user.setUser(u);
 			Taggable forSale = new Taggable();
 			forSale.setDescription("test");
-			forSale.setId("ddddds-8fd1-4ef3-9fe8-fdaac4315fd9");
+			forSale.setId("123456");
 			forSale.setImageType("jpg");
 			Position pos = new Position();
 			// pos.setLat(new Double("45.3194077").doubleValue());
@@ -197,8 +180,9 @@ public class TestController {
 			System.out.println(jjson);
 			StringEntity input = new StringEntity(jjson);
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-//			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land");
-			HttpPost postRequest = new HttpPost("http://95.110.224.34:8080/relay-service-web/rest/land");
+			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land");
+			// HttpPost postRequest = new
+			// HttpPost("http://95.110.224.34:8080/relay-service-web/rest/land");
 
 			// input.setContentType("application/json");
 			postRequest.addHeader("Content-Type", "application/json");
@@ -311,5 +295,4 @@ public class TestController {
 		is.close();
 		return bytes;
 	}
-
 }
