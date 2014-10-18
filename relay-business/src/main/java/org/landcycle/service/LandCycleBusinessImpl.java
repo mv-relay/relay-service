@@ -1,6 +1,8 @@
 package org.landcycle.service;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,7 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.landcycle.api.LikeItem;
@@ -47,14 +50,12 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	@Autowired
 	LikeRepository likeRepository;
 
-	// @Autowired
-	// ForSaleDao forSaleDao;
-
 	@Override
 	public UserItem saveOrUpdateTaggable(UserItem upload) throws Exception {
 		// TODO Auto-generated method stub
 		log.debug("Input save or update : " + CommonUtils.bean2string(upload));
 		if (upload.getTaggable() != null) {
+			
 			UserEntity uu = new UserEntity();
 			uu.setMail(upload.getUser().getMail());
 			Taggable taggable = upload.getTaggable();
@@ -63,7 +64,6 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			taggableEntity.setImg(id);
 			taggableEntity.setId(id);
 			taggableEntity.setUser(upload.getUser().getMail());
-			// forSaleEntity.setMailacq(upload.getForSale().getMailAcq());
 			BeanUtils.copyProperties(taggable, taggableEntity, new String[] { "id" });
 			Position positio = upload.getTaggable().getPosition();
 			if (positio != null) {
@@ -75,32 +75,34 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			tmp.add(taggableEntity);
 			uu.setTaggable(tmp);
 			log.debug("User insert : " + CommonUtils.bean2string(uu));
-			// forSaleDao.save(forSaleEntity);
 			userRepository.save(uu);
 		}
 		return upload;
 	}
 
-	private void writeFile(byte[] stream, String path) throws IOException, Exception {
+	private void writeFile(byte[] stream, String path,String imgType) throws IOException, Exception {
 		// *************************************************************************
 		// Inizializzo le variabili
 		// *************************************************************************
 		OutputStream fos = null;
 		BufferedOutputStream bos = null;
+		BufferedImage image = null;
 		try {
+			image = ImageIO.read(new ByteArrayInputStream(stream));
 			// *************************************************************************
 			// Converto la string base64 in byte
 			// *************************************************************************
-			byte[] bstream = stream;
+//			byte[] bstream = stream;
 			// *************************************************************************
 			// Scrivo il file
 			// *************************************************************************
-			fos = new FileOutputStream(path);
-			bos = new BufferedOutputStream(fos);
-			bos.write(bstream);
+			File f = new File(path);
+//			fos = new FileOutputStream(path);
+//			bos = new BufferedOutputStream(fos);
+//			bos.write(bstream);
 			// change permission
 			// int esito = chmod(path, 666);
-
+			 ImageIO.write(image, imgType, f);
 			// log.debug("Esito change permission {} ", esito);
 		} catch (IOException e) {
 			log.error("Errore nello scrivere il file", e);
@@ -116,6 +118,8 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			if (fos != null) {
 				fos.flush();
 				fos.close();
+			}if(image!= null){
+				image.flush();
 			}
 		}
 	}
@@ -189,9 +193,6 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			forSaleEntity.setLat(positio.getLat());
 			forSaleEntity.setLng(positio.getLng());
 		}
-		// if (user.getUser() != null){
-		// forSaleEntity.setUser(user.getUser().getMail());
-		// }
 		log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
 		Set<UserEntity> resp = userRepository.findByQuery(forSaleEntity.getLng(), forSaleEntity.getLat());
 		List<UserItem> response = new ArrayList<UserItem>();
@@ -221,21 +222,21 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 
 	@Override
 	public UserItem upload(UserItem upload) throws Exception {
-		UUID uuidFile = UUID.randomUUID();
-		if (upload.getTaggable().getId() != null && !upload.getTaggable().getId().isEmpty()) {
-			TaggableEntity te = new TaggableEntity();
-			te.setId(upload.getTaggable().getId());
-			taggableRepository.save(te);
-		} else {
-			upload.getTaggable().setId(uuidFile.toString());
-		}
+//		UUID uuidFile = UUID.randomUUID();
+//		if (upload.getTaggable().getId() != null && !upload.getTaggable().getId().isEmpty()) {
+//			TaggableEntity te = new TaggableEntity();
+//			te.setId(upload.getTaggable().getId());
+//			taggableRepository.save(te);
+//		} else {
+//			upload.getTaggable().setId(uuidFile.toString());
+//		}
 		String fileName = uploadFileName(upload.getTaggable().getImageType(), upload.getTaggable().getId(),
 				getDirUpload());
 		log.debug("##############fileName : " + fileName);
-		writeFile(upload.getTaggable().getStreams(), fileName);
-
+		writeFile(upload.getTaggable().getStreams(), fileName,upload.getTaggable().getImageType());
+//		Base64.decodeBase64(uploadedFile.getStream().getBytes())
 		// clean output
-		upload.getTaggable().setStreams(null);
+//		upload.getTaggable().setStreams(null);
 		return upload;
 	}
 

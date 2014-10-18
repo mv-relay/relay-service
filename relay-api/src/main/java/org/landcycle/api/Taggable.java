@@ -2,15 +2,16 @@ package org.landcycle.api;
 
 import java.io.Serializable;
 
-import org.springframework.web.multipart.MultipartFile;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class Taggable implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String stream;
-	private byte[] streams;
+	private String stream = null;
+	@JsonIgnore
+	private byte[] streams = null;
 	private String id;
 	private String name;
 	private String mailAcq;
@@ -20,14 +21,6 @@ public class Taggable implements Serializable {
 	private String[] tags;
 	private Position position;
 	private LikeItem like;
-
-	public byte[] getStreams() {
-		return streams;
-	}
-
-	public void setStreams(byte[] streams) {
-		this.streams = streams;
-	}
 
 	public String getStream() {
 		return stream;
@@ -107,6 +100,14 @@ public class Taggable implements Serializable {
 
 	public void setLike(LikeItem like) {
 		this.like = like;
+	}
+
+	public byte[] getStreams() {
+		return streams;
+	}
+
+	public void setStreams(byte[] streams) {
+		this.streams = streams;
 	}
 
 }

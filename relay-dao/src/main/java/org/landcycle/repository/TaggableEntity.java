@@ -1,5 +1,6 @@
 package org.landcycle.repository;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
@@ -18,8 +21,8 @@ public class TaggableEntity {
 	public TaggableEntity() {
 	}
 
-	public TaggableEntity(String id, String name, String img, String description, String tags, String user,
-			String mailacq, String optional, String citta, Double lat, Double lng, int category) {
+	public TaggableEntity(String id, String name, String img, String description, String tags, String user, String mailacq, String optional, String citta,
+			Double lat, Double lng, int category) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -35,7 +38,6 @@ public class TaggableEntity {
 		this.category = category;
 	}
 
-	
 	@Id
 	@Column(name = "id", length = 100)
 	private String id;
@@ -58,10 +60,17 @@ public class TaggableEntity {
 	private Double lat;
 	private Double lng;
 	private int category;
+	private String type;
+	@Column(name = "createdat",updatable = false)
+	private Date createdAt;
+
+	@Column(name = "updatedat")
+	private Date updatedAt;
 
 	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<LikeEntity> likes;
+
 	public String getId() {
 		return id;
 	}
@@ -170,6 +179,40 @@ public class TaggableEntity {
 		if (this.likes == null)
 			this.likes = new HashSet<LikeEntity>();
 		this.likes.add(likes);
+	}
+
+	@PrePersist
+	void createdAt() {
+		this.createdAt = this.updatedAt = new Date();
+	}
+
+	@PreUpdate
+	void updatedAt() {
+		this.updatedAt = new Date();
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 }
