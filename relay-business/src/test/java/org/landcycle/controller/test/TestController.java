@@ -16,6 +16,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+import org.landcycle.api.CommentItem;
 import org.landcycle.api.LikeItem;
 import org.landcycle.api.Position;
 import org.landcycle.api.TaggableItem;
@@ -66,10 +67,11 @@ public class TestController {
 	@Test
 	public void testComment() {
 		try {
-			LikeItem like = new LikeItem();
-			like.setId("dddd-8fd1-4ef3-9fe8-fdaac4315fd9");
+			CommentItem like = new CommentItem();
+			like.setId("7a0de533-c5ac-4262-86e1-4ac4c3b03015");
 			like.setUser("massimiliano.regis@gmail.com");
-			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land/Like");
+			like.setComment("test");
+			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land/Comment");
 			postRequest.addHeader("Content-Type", "application/json");
 			ObjectMapper mapper = new ObjectMapper();
 			String jjson = mapper.writeValueAsString(like);

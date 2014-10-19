@@ -238,8 +238,8 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		TaggableEntity userEntity = taggableRepository.findOne(user.getTaggable().getId());
 		log.debug("Find one " + CommonUtils.bean2string(userEntity));
 		TaggableItem response = new TaggableItem();
-
-		BeanUtils.copyProperties(userEntity, response);
+		if (userEntity != null)
+			BeanUtils.copyProperties(userEntity, response);
 
 		return response;
 	}
