@@ -6,18 +6,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Likes")
-public class LikeEntity {
-	public LikeEntity() {
+@Table(name = "Comments")
+public class CommentEntity {
+	public CommentEntity() {
 	}
 
-	public LikeEntity(String id, String user) {
+	public CommentEntity(String id, String user, String comment) {
 		super();
 		this.id = id;
 		this.user = user;
+		this.comment = comment;
 	}
 
 	@Id
@@ -25,6 +27,8 @@ public class LikeEntity {
 	private String id;
 	@Column(name = "user", length = 100)
 	private String user;
+	@Column(name = "comment", length = 100)
+	private String comment;
 	@Column(name = "createdat",updatable = false)
 	private Date createdAt;
 
@@ -43,6 +47,15 @@ public class LikeEntity {
 	public void setUser(String user) {
 		this.user = user;
 	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	
 	@PrePersist
 	void createdAt() {
 		this.createdAt  = new Date();
@@ -52,4 +65,5 @@ public class LikeEntity {
 	public Date getCreatedAt() {
 		return createdAt;
 	}
+	
 }

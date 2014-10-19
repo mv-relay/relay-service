@@ -14,7 +14,7 @@ public interface UserRepository extends Repository<UserEntity, String>
 	public Set<UserEntity> findByQuery(@Param("longitudine") Double longitudine,
 			@Param("latitudine") Double latitudine);
 	public UserEntity save(UserEntity wsdl);
-	public UserEntity findOne(String mail);
+	public UserEntity findOne(String id);
 	public void delete(String entity);
 	public boolean exists(String entity);
 	

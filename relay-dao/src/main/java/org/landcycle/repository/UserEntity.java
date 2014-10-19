@@ -38,9 +38,6 @@ public class UserEntity {
 	private String cognome;
 	@Column(name = "avatar", length = 80)
 	private String avatar;
-
-	// @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
-	// @JoinColumn(name="mailvend")
 	@JoinColumn(name = "user", referencedColumnName = "mail", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Fetch (FetchMode.SELECT)

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class Taggable implements Serializable {
+public class TaggableItem implements Serializable {
 	/**
 	 * 
 	 */

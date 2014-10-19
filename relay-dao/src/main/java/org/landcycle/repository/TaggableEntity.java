@@ -70,6 +70,10 @@ public class TaggableEntity {
 	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<LikeEntity> likes;
+	
+	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<CommentEntity> comments;
 
 	public String getId() {
 		return id;
@@ -215,4 +219,13 @@ public class TaggableEntity {
 		this.updatedAt = updatedAt;
 	}
 
+	public Set<CommentEntity> getComments() {
+		return comments;
+	}
+
+	public void setComments(Set<CommentEntity> comments) {
+		this.comments = comments;
+	}
+
+	
 }

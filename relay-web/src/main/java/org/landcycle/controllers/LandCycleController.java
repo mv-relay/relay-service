@@ -6,9 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.landcycle.api.CommentItem;
 import org.landcycle.api.LikeItem;
 import org.landcycle.api.Position;
-import org.landcycle.api.Taggable;
+import org.landcycle.api.TaggableItem;
 import org.landcycle.api.UserItem;
 import org.landcycle.api.exception.LandcycleException;
 import org.landcycle.api.rest.JsonResponseData;
@@ -16,6 +17,7 @@ import org.landcycle.service.LandCycleBusiness;
 import org.landcycle.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,6 +40,59 @@ public class LandCycleController extends BaseRestController {
 	@Autowired
 	LandCycleBusiness landCycleBusiness;
 
+	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
+	public @ResponseBody
+	JsonResponseData<UserItem> findAround(@RequestParam(value = "lat", required = false) String lat, @RequestParam(value = "lng", required = false) String lng,
+	// @RequestParam(value = "user", required = false) String user,
+			@RequestParam(value = "tags", required = false) String tags, HttpServletResponse response) {
+		try {
+			UserItem item = new UserItem();
+			if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
+				Position pos = new Position();
+				pos.setLat(Double.parseDouble(lat));
+				pos.setLng(Double.parseDouble(lng));
+				TaggableItem sale = new TaggableItem();
+				sale.setPosition(pos);
+				if (tags != null && tags.length() > 0)
+					sale.setTags(tags.split(","));
+				item.setTaggable(sale);
+			}
+			List<UserItem> items = landCycleBusiness.find(item);
+			logger.debug("findAround : " + CommonUtils.bean2string(items));
+			return ariaResponse(items);
+		} catch (LandcycleException e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw e;
+		} catch (Exception e) {
+			logger.error("UNHANDLED EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public @ResponseBody
+	JsonResponseData<TaggableItem> findOne(@PathVariable("id") String id) {
+		try {
+			UserItem item = new UserItem();
+			TaggableItem taggable = new TaggableItem();
+			taggable.setId(id);
+
+			item.setTaggable(taggable);
+
+			TaggableItem items = landCycleBusiness.findOne(item);
+			logger.debug("findAround : " + CommonUtils.bean2string(items));
+			return ariaResponse(items);
+		} catch (LandcycleException e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw e;
+		} catch (Exception e) {
+			logger.error("UNHANDLED EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+
+	}
+
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody
 	JsonResponseData<UserItem> saveOrUpdate(@RequestBody UserItem upload) {
@@ -45,17 +100,16 @@ public class LandCycleController extends BaseRestController {
 		try {
 			if (upload.getTaggable().getStream() != null && !upload.getTaggable().getStream().isEmpty()) {
 				// // data:image/jpeg;base64,11111
-				Taggable tg = upload.getTaggable();
+				TaggableItem tg = upload.getTaggable();
 				int start = tg.getStream().indexOf(",");
 				String data = tg.getStream().substring(start + 1);
-				
-				
+
 				int end1 = tg.getStream().indexOf(";");
 				int start1 = tg.getStream().indexOf(":");
-				
-				String ctype = tg.getStream().substring(start1+1,end1);
+
+				String ctype = tg.getStream().substring(start1 + 1, end1);
 				tg.setStreams(Base64.decodeBase64(data.getBytes()));
-//				
+				//
 				logger.debug("CTYPE : " + ctype);
 				int size = tg.getStream().getBytes().length;
 				if (size > SIZE_AVATAR) {
@@ -78,47 +132,13 @@ public class LandCycleController extends BaseRestController {
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);
 			throw new LandcycleException(e);
-		} 
+		}
 	}
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.OPTIONS)
 	public @ResponseBody
 	JsonResponseData<UserItem> options() {
 		return ariaResponse(new UserItem());
-	}
-
-	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-	public @ResponseBody
-	JsonResponseData<UserItem> findAround(@RequestParam(value = "lat", required = false) String lat, 
-			@RequestParam(value = "lng", required = false) String lng,
-			// @RequestParam(value = "user", required = false) String user,
-			@RequestParam(value = "tags", required = false) String tags, HttpServletResponse response) {
-		try {
-			UserItem item = new UserItem();
-			if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
-				Position pos = new Position();
-				pos.setLat(Double.parseDouble(lat));
-				pos.setLng(Double.parseDouble(lng));
-				Taggable sale = new Taggable();
-				sale.setPosition(pos);
-				if (tags != null && tags.length() > 0)
-					sale.setTags(tags.split(","));
-				// User u = new User();
-				// u.setMail(user);
-				// item.setUser(u);
-				item.setTaggable(sale);
-			}
-			List<UserItem> items = landCycleBusiness.find(item);
-			logger.debug("findAround : " + CommonUtils.bean2string(items));
-			return ariaResponse(items);
-		} catch (LandcycleException e) {
-			logger.error("APPLICATION EXCEPTION", e);
-			throw e;
-		} catch (Exception e) {
-			logger.error("UNHANDLED EXCEPTION", e);
-			throw new LandcycleException(e);
-		}
-
 	}
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.PUT)
@@ -140,6 +160,17 @@ public class LandCycleController extends BaseRestController {
 	JsonResponseData<LikeItem> like(@RequestBody LikeItem like, HttpServletResponse response) {
 		try {
 			landCycleBusiness.saveLike(like);
+			return ariaResponse(like);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	@RequestMapping(value = "/Comment ", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonResponseData<CommentItem> comment(@RequestBody CommentItem like) {
+		try {
+			landCycleBusiness.saveComment(like);
 			return ariaResponse(like);
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);

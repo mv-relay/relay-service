@@ -6,24 +6,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.rmi.server.UID;
 import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.landcycle.api.LikeItem;
 import org.landcycle.api.Position;
-import org.landcycle.api.Taggable;
+import org.landcycle.api.TaggableItem;
 import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
 
@@ -43,6 +38,33 @@ public class TestController {
 
 	@Test
 	public void testLike() {
+		try {
+			LikeItem like = new LikeItem();
+			like.setId("dddd-8fd1-4ef3-9fe8-fdaac4315fd9");
+			like.setUser("massimiliano.regis@gmail.com");
+			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land/Like");
+			postRequest.addHeader("Content-Type", "application/json");
+			ObjectMapper mapper = new ObjectMapper();
+			String jjson = mapper.writeValueAsString(like);
+			System.out.println(jjson);
+			StringEntity input = new StringEntity(jjson);
+			postRequest.setEntity(input);
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpResponse response = httpClient.execute(postRequest);
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+			
+			String output;
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println(output);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void testComment() {
 		try {
 			LikeItem like = new LikeItem();
 			like.setId("dddd-8fd1-4ef3-9fe8-fdaac4315fd9");
@@ -80,9 +102,10 @@ public class TestController {
 			User u = new User();
 			u.setMail("valerio.artusi@gmail.com");
 			user.setUser(u);
-			Taggable forSale = new Taggable();
+			TaggableItem forSale = new TaggableItem();
 			forSale.setStream(mime+b64file);
 			forSale.setDescription("test");
+			forSale.setName("test");
 			forSale.setId(uuidFile.toString());
 			forSale.setImageType("jpg");
 			Position pos = new Position();
@@ -127,11 +150,11 @@ public class TestController {
 		try {
 			UserItem user = new UserItem();
 			User u = new User();
-			u.setMail("massimilianoq.regis@gmail.com");
+			u.setMail("massimiliano.regis@gmail.com");
 			user.setUser(u);
-			Taggable taggable = new Taggable();
+			TaggableItem taggable = new TaggableItem();
 			taggable.setDescription("test");
-			taggable.setId("da970292-022a-4dfb-af87-2f9ecde0a5f4");
+			taggable.setId("c03245bf-1265-486e-9472-984579f93960");
 			
 			Position pos = new Position();
 			// pos.setLat(new Double("45.3194077").doubleValue());
