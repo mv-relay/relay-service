@@ -72,11 +72,14 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				taggableEntity.setLng(positio.getLng());
 			}
 			taggableEntity.setImg(getUrlImage() + id + "." + taggable.getImageType());
+			taggable.setImg(getUrlImage() + id + "." + taggable.getImageType());
 			Set<TaggableEntity> tmp = new HashSet<TaggableEntity>();
 			tmp.add(taggableEntity);
 			uu.setTaggable(tmp);
 			log.debug("User insert : " + CommonUtils.bean2string(uu));
 			userRepository.save(uu);
+			taggable.setStream(null);
+			upload.setTaggable(taggable);
 		}
 		return upload;
 	}

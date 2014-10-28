@@ -120,9 +120,9 @@ public class TestController {
 			System.out.println(jjson);
 			StringEntity input = new StringEntity(jjson);
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land");
-//			 HttpPost postRequest = new
-//			 HttpPost("http://95.110.224.34:8080/relay-service-web/rest/land");
+//			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land");
+			 HttpPost postRequest = new
+			 HttpPost("http://95.110.224.34:8080/relay-service-web/rest/land");
 
 			postRequest.addHeader("Content-Type", "application/json");
 			postRequest.setEntity(input);
