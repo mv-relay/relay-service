@@ -29,7 +29,6 @@ target/
 */target/**
 *~
 
-#plan del progetto
-./assegni-fe-ear/src/weblogic/my-ear-Plan.xml
+
 
 *.DS_Store
