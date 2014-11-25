@@ -14,7 +14,7 @@ public interface LandCycleBusiness {
 
 	UserItem upload(UserItem upload) throws Exception;
 
-	public List<UserItem> find(UserItem user) throws Exception;
+	public List<TaggableItem> find(TaggableItem taggable) throws Exception;
 
 	TaggableItem findOne(UserItem user) throws Exception;
 

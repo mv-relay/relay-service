@@ -42,23 +42,24 @@ public class LandCycleController extends BaseRestController {
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	public @ResponseBody
-	JsonResponseData<UserItem> findAround(@RequestParam(value = "lat", required = false) String lat, @RequestParam(value = "lng", required = false) String lng,
+	JsonResponseData<TaggableItem> findAround(@RequestParam(value = "lat", required = false) String lat, @RequestParam(value = "lng", required = false) String lng,
 	// @RequestParam(value = "user", required = false) String user,
 			@RequestParam(value = "tags", required = false) String tags, HttpServletResponse response) {
+		TaggableItem sale = new TaggableItem();
 		try {
-			UserItem item = new UserItem();
+//			UserItem item = new UserItem();
 			if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
 				Position pos = new Position();
 				pos.setLat(Double.parseDouble(lat));
 				pos.setLng(Double.parseDouble(lng));
-				TaggableItem sale = new TaggableItem();
 				sale.setPosition(pos);
 				if (tags != null && tags.length() > 0)
 					sale.setTags(tags.split(","));
-				item.setTaggable(sale);
+//				item.setTaggable(sale);
 			}
-			List<UserItem> items = landCycleBusiness.find(item);
+			List<TaggableItem> items = landCycleBusiness.find(sale);
 			logger.debug("findAround : " + CommonUtils.bean2string(items));
+//			item.setTaggables(items);
 			return ariaResponse(items);
 		} catch (LandcycleException e) {
 			logger.error("APPLICATION EXCEPTION", e);

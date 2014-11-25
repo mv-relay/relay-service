@@ -25,6 +25,7 @@ import org.landcycle.api.UserItem;
 
 public class TestController {
 
+	//select u.*,f.*, ( 6371 * acos( cos( radians(45.3591309) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(9.1578271 ) ) + sin( radians(45.3591309) ) * sin( radians( lat ) ) ) ) AS distance from User u JOIN Taggable AS f on u.mail = f.user HAVING distance < 50 ORDER BY distance LIMIT 0 , 50
 	@Test
 	public void testMime(){
 		String tg = "data:image/jpeg;base64,11111";
@@ -120,9 +121,9 @@ public class TestController {
 			System.out.println(jjson);
 			StringEntity input = new StringEntity(jjson);
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-//			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land");
-			 HttpPost postRequest = new
-			 HttpPost("http://95.110.224.34:8080/relay-service-web/rest/land");
+			HttpPost postRequest = new HttpPost("http://localhost:8080/relay-service-web/rest/land");
+//			 HttpPost postRequest = new
+//			 HttpPost("http://95.110.224.34:8080/relay-service-web/rest/land");
 
 			postRequest.addHeader("Content-Type", "application/json");
 			postRequest.setEntity(input);

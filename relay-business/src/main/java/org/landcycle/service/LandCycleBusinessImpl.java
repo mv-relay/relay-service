@@ -190,47 +190,29 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	}
 
 	@Override
-	public List<UserItem> find(UserItem user) throws Exception {
-		// TODO Auto-generated method stub
-		Set<UserEntity> users = null;
+	public List<TaggableItem> find(TaggableItem taggable) throws Exception {
+		List<TaggableEntity> taggables = null;
 
 		TaggableEntity forSaleEntity = new TaggableEntity();
-		if (user.getTaggable() != null && user.getTaggable().getPosition() != null) {
-			Position positio = user.getTaggable().getPosition();
-			forSaleEntity.setLat(positio.getLat());
-			forSaleEntity.setLng(positio.getLng());
-			log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
-			users = userRepository.findByQuery(forSaleEntity.getLng(), forSaleEntity.getLat());
+
+		Position positio = taggable.getPosition();
+		forSaleEntity.setLat(positio.getLat());
+		forSaleEntity.setLng(positio.getLng());
+		log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
+		taggables = taggableRepository.findByQuery(forSaleEntity.getLng(), forSaleEntity.getLat());
+
+		List<TaggableItem> response = new ArrayList<TaggableItem>();
+		for (TaggableEntity tagEntity : taggables) {
+
+			TaggableItem ff = new TaggableItem();
+			BeanUtils.copyProperties(tagEntity, ff);
+			Position pos = new Position();
+			pos.setLat(tagEntity.getLat());
+			pos.setLng(tagEntity.getLng());
+			ff.setPosition(pos);
+
+			response.add(ff);
 		}
-		// if(user.getTaggable().getId() != null &&
-		// !user.getTaggable().getId().isEmpty()){
-		// UserEntity resp = userRepository.findOne(user.getTaggable().getId());
-		// users = new HashSet<UserEntity>();
-		// users.add(resp);
-		//
-		// }
-		List<UserItem> response = new ArrayList<UserItem>();
-		for (UserEntity userEntity : users) {
-			UserItem tmp = new UserItem();
-			User u = new User();
-			u.setMail(userEntity.getMail());
-			u.setFirstName(userEntity.getNome());
-			u.setSecondName(userEntity.getCognome());
-			tmp.setUser(u);
-			Set<TaggableEntity> ee = userEntity.getTaggable();
-			for (TaggableEntity forsaleEntity2 : ee) {
-				TaggableItem ff = new TaggableItem();
-				BeanUtils.copyProperties(forsaleEntity2, ff);
-				Position pos = new Position();
-				pos.setLat(forsaleEntity2.getLat());
-				pos.setLng(forsaleEntity2.getLng());
-				ff.setPosition(pos);
-				tmp.addTag(ff);
-			}
-			response.add(tmp);
-		}
-		// log.debug("List<UserEntity> resp : " +
-		// CommonUtils.bean2string(resp));
 
 		return response;
 	}
