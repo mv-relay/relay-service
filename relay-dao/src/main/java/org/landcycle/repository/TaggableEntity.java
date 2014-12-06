@@ -78,6 +78,10 @@ public class TaggableEntity {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<TagEntity> tags;
 
+	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<MediaEntity> media;
+
 	public String getId() {
 		return id;
 	}
@@ -228,6 +232,14 @@ public class TaggableEntity {
 
 	public void setComments(Set<CommentEntity> comments) {
 		this.comments = comments;
+	}
+
+	public List<MediaEntity> getMedia() {
+		return media;
+	}
+
+	public void setMedia(List<MediaEntity> media) {
+		this.media = media;
 	}
 
 }

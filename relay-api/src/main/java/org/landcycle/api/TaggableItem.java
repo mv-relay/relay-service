@@ -21,6 +21,7 @@ public class TaggableItem implements Serializable {
 	private String [] tags;
 	private Position position;
 	private LikeItem like;
+	private MediaItem[] medias;
 
 	public String getStream() {
 		return stream;
@@ -102,6 +103,14 @@ public class TaggableItem implements Serializable {
 		this.like = like;
 	}
 
+	public MediaItem[] getMedias() {
+		return medias;
+	}
+
+	public void setMedias(MediaItem[] medias) {
+		this.medias = medias;
+	}
+
 //	public byte[] getStreams() {
 //		return streams;
 //	}
@@ -109,5 +118,5 @@ public class TaggableItem implements Serializable {
 //	public void setStreams(byte[] streams) {
 //		this.streams = streams;
 //	}
-
+	
 }

@@ -6,6 +6,8 @@ public class MediaItem {
 	private String id;
 	private String user;
 	private String stream;
+	private String path;
+	private String name;
 	@JsonIgnore
 	private String type;
 	@JsonIgnore
@@ -51,4 +53,19 @@ public class MediaItem {
 		this.type = type;
 	}
 
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

@@ -226,7 +226,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		forSaleEntity.setLng(positio.getLng());
 		log.debug("Entity dao request : " + CommonUtils.bean2string(forSaleEntity));
 		taggables = taggableRepository.findByQuery(forSaleEntity.getLng(), forSaleEntity.getLat());
-
+		log.debug("Entity dao response : " + CommonUtils.bean2string(taggables));
 		List<TaggableItem> response = new ArrayList<TaggableItem>();
 		for (TaggableEntity tagEntity : taggables) {
 
@@ -236,7 +236,19 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			pos.setLat(tagEntity.getLat());
 			pos.setLng(tagEntity.getLng());
 			ff.setPosition(pos);
+			if (tagEntity.getMedia() != null && tagEntity.getMedia().size() > 0) {
+				int i = 0;
+				List<MediaEntity> media = tagEntity.getMedia();
+				MediaItem[] mediaRespone = new MediaItem[tagEntity.getMedia().size()];
+				for (MediaEntity mediaEntity : media) {
 
+					MediaItem ttmp = new MediaItem();
+					BeanUtils.copyProperties(mediaEntity, ttmp);
+					mediaRespone[i] = ttmp;
+					i++;
+				}
+				ff.setMedias(mediaRespone);
+			}
 			response.add(ff);
 		}
 
