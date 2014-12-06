@@ -101,7 +101,6 @@ public class LandCycleController extends BaseRestController {
 				int start1 = tg.getStream().indexOf(":");
 
 				String ctype = tg.getStream().substring(start1 + 1, end1);
-				tg.setStreams(Base64.decodeBase64(data.getBytes()));
 				//
 				logger.debug("CTYPE : " + ctype);
 				int size = tg.getStream().getBytes().length;
@@ -113,11 +112,11 @@ public class LandCycleController extends BaseRestController {
 								.equals("image/pjpeg"))) {
 					throw new LandcycleException("0001", "Formato non consentito");
 				}
-				UserItem item = new UserItem();
-				item.setTaggable(tg);
-				tg.setImageType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
-				tg.setId(tg.getId());
-				landCycleBusiness.upload(item);
+				MediaItem item = new MediaItem();
+				item.setStreams(Base64.decodeBase64(data.getBytes()));
+				item.setType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
+				item.setId(tg.getId());
+				landCycleBusiness.uploadMedia(item);
 				upload.getTaggable().setImageType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
 			}
 			landCycleBusiness.saveOrUpdateTaggable(upload);
@@ -133,19 +132,6 @@ public class LandCycleController extends BaseRestController {
 		return ariaResponse(new UserItem());
 	}
 
-//	@RequestMapping(value = { "", "/" }, method = RequestMethod.PUT)
-//	public @ResponseBody JsonResponseData<UserItem> update(@RequestBody UserItem upload, HttpServletResponse response) {
-//
-//		try {
-//
-//			landCycleBusiness.saveOrUpdateTaggable(upload);
-//			return ariaResponse(upload);
-//		} catch (Exception e) {
-//			logger.error("APPLICATION EXCEPTION", e);
-//			throw new LandcycleException(e);
-//		}
-//	}
-
 	@RequestMapping(value = "/Like ", method = RequestMethod.POST)
 	public @ResponseBody JsonResponseData<LikeItem> like(@RequestBody LikeItem like, HttpServletResponse response) {
 		try {
@@ -157,7 +143,7 @@ public class LandCycleController extends BaseRestController {
 		}
 	}
 
-	@RequestMapping(value = "/Comment ", method = RequestMethod.POST)
+	@RequestMapping(value = "/Comment", method = RequestMethod.POST)
 	public @ResponseBody JsonResponseData<CommentItem> comment(@RequestBody CommentItem like) {
 		try {
 			landCycleBusiness.saveComment(like);
@@ -168,44 +154,42 @@ public class LandCycleController extends BaseRestController {
 		}
 	}
 	
-//	@RequestMapping(value = { "", "/" }, method = RequestMethod.POST, consumes = "application/json")
-//	public @ResponseBody JsonResponseData<MediaItem> saveOrUpdateMedia(@RequestBody MediaItem upload) {
-//
-//		try {
-//			if (upload.getTaggable().getStream() != null && !upload.getTaggable().getStream().isEmpty()) {
-//				// // data:image/jpeg;base64,11111
-//				TaggableItem tg = upload.getTaggable();
-//				int start = tg.getStream().indexOf(",");
-//				String data = tg.getStream().substring(start + 1);
-//
-//				int end1 = tg.getStream().indexOf(";");
-//				int start1 = tg.getStream().indexOf(":");
-//
-//				String ctype = tg.getStream().substring(start1 + 1, end1);
-//				tg.setStreams(Base64.decodeBase64(data.getBytes()));
-//				//
-//				logger.debug("CTYPE : " + ctype);
-//				int size = tg.getStream().getBytes().length;
-//				if (size > SIZE_AVATAR) {
-//					throw new LandcycleException("002", "Dimensione non consentita");
-//				}
+	@RequestMapping(value = "/UploadMedia", method = RequestMethod.POST, consumes = "application/json")
+	public @ResponseBody JsonResponseData<MediaItem> saveOrUpdateMedia(@RequestBody MediaItem media) {
+
+		try {
+			if (media.getStream() != null && !media.getStream().isEmpty()) {
+				// // data:image/jpeg;base64,11111
+				int start = media.getStream().indexOf(",");
+				String data = media.getStream().substring(start + 1);
+
+				int end1 = media.getStream().indexOf(";");
+				int start1 = media.getStream().indexOf(":");
+
+				String ctype = media.getStream().substring(start1 + 1, end1);
+				media.setStreams(Base64.decodeBase64(data.getBytes()));
+				//
+				logger.debug("CTYPE : " + ctype);
+				int size = media.getStream().getBytes().length;
+				if (size > SIZE_AVATAR) {
+					throw new LandcycleException("002", "Dimensione non consentita");
+				}
 //				if (ctype != null
 //						&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
 //								.equals("image/pjpeg"))) {
 //					throw new LandcycleException("0001", "Formato non consentito");
 //				}
-//				UserItem item = new UserItem();
-//				item.setTaggable(tg);
-//				tg.setImageType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
-//				tg.setId(tg.getId());
-//				landCycleBusiness.upload(item);
+				
+				media.setType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
+				
+				landCycleBusiness.uploadMedia(media);
 //				upload.getTaggable().setImageType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
-//			}
-//			landCycleBusiness.saveOrUpdateTaggable(upload);
-//			return ariaResponse(upload);
-//		} catch (Exception e) {
-//			logger.error("APPLICATION EXCEPTION", e);
-//			throw new LandcycleException(e);
-//		}
-//	}
+			}
+			landCycleBusiness.saveOrUpdateMedia(media);
+			return ariaResponse(media);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
 }

@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,14 +15,16 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.landcycle.api.CommentItem;
 import org.landcycle.api.LikeItem;
+import org.landcycle.api.MediaItem;
 import org.landcycle.api.Position;
 import org.landcycle.api.TaggableItem;
-import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
 import org.landcycle.repository.CommentEntity;
 import org.landcycle.repository.CommentRepository;
 import org.landcycle.repository.LikeEntity;
 import org.landcycle.repository.LikeRepository;
+import org.landcycle.repository.MediaEntity;
+import org.landcycle.repository.MediaRepository;
 import org.landcycle.repository.TagEntity;
 import org.landcycle.repository.TaggableEntity;
 import org.landcycle.repository.TaggableRepository;
@@ -52,6 +53,8 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	LikeRepository likeRepository;
 	@Autowired
 	CommentRepository commentRepository;
+	@Autowired
+	MediaRepository mediaRepository;
 
 	@Override
 	public UserItem saveOrUpdateTaggable(UserItem upload) throws Exception {
@@ -67,7 +70,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			if (upload.getTaggable().getTags() != null && upload.getTaggable().getTags().length > 0) {
 				List<TagEntity> tmpTags = new ArrayList<TagEntity>();
 				for (int i = 0; i < upload.getTaggable().getTags().length; i++) {
-					TagEntity tag = new TagEntity(id,upload.getTaggable().getTags()[i]);
+					TagEntity tag = new TagEntity(id, upload.getTaggable().getTags()[i]);
 					tmpTags.add(tag);
 				}
 				taggableEntity.setTags(tmpTags);
@@ -93,6 +96,18 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			upload.setTaggable(taggable);
 		}
 		return upload;
+	}
+
+	@Override
+	public MediaItem saveOrUpdateMedia(MediaItem media) throws Exception {
+
+		MediaEntity me = new MediaEntity();
+		me.setId(media.getId());
+		me.setPath(getUrlImage() + media.getId() + "." + media.getType());
+		mediaRepository.save(me);
+		media.setStream(null);
+
+		return media;
 	}
 
 	private void writeFile(byte[] stream, String path, String imgType) throws IOException, Exception {
@@ -240,11 +255,21 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		return response;
 	}
 
+	// @Override
+	// public UserItem upload(UserItem upload) throws Exception {
+	// String fileName = uploadFileName(upload.getTaggable().getImageType(),
+	// upload.getTaggable().getId(), getDirUpload());
+	// log.debug("##############fileName : " + fileName);
+	// writeFile(upload.getTaggable().getStreams(), fileName,
+	// upload.getTaggable().getImageType());
+	// return upload;
+	// }
+
 	@Override
-	public UserItem upload(UserItem upload) throws Exception {
-		String fileName = uploadFileName(upload.getTaggable().getImageType(), upload.getTaggable().getId(), getDirUpload());
+	public MediaItem uploadMedia(MediaItem upload) throws Exception {
+		String fileName = uploadFileName(upload.getType(), upload.getId(), getDirUpload());
 		log.debug("##############fileName : " + fileName);
-		writeFile(upload.getTaggable().getStreams(), fileName, upload.getTaggable().getImageType());
+		writeFile(upload.getStreams(), fileName, upload.getType());
 		return upload;
 	}
 

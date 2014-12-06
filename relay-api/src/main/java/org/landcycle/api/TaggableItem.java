@@ -10,8 +10,8 @@ public class TaggableItem implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String stream = null;
-	@JsonIgnore
-	private byte[] streams = null;
+//	@JsonIgnore
+//	private byte[] streams = null;
 	private String id;
 	private String name;
 	private String mailAcq;
@@ -102,12 +102,12 @@ public class TaggableItem implements Serializable {
 		this.like = like;
 	}
 
-	public byte[] getStreams() {
-		return streams;
-	}
-
-	public void setStreams(byte[] streams) {
-		this.streams = streams;
-	}
+//	public byte[] getStreams() {
+//		return streams;
+//	}
+//
+//	public void setStreams(byte[] streams) {
+//		this.streams = streams;
+//	}
 
 }
