@@ -103,6 +103,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 
 		MediaEntity me = new MediaEntity();
 		me.setId(media.getId());
+		me.setName(media.getName());
 		me.setPath(getUrlImage() + media.getId() + "." + media.getType());
 		mediaRepository.save(me);
 		media.setStream(null);

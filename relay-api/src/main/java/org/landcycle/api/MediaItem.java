@@ -3,6 +3,7 @@ package org.landcycle.api;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class MediaItem {
+	private String uuid;
 	private String id;
 	private String user;
 	private String stream;
@@ -12,6 +13,15 @@ public class MediaItem {
 	private String type;
 	@JsonIgnore
 	private byte[] streams;
+
+	
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 
 	public String getId() {
 		return id;
