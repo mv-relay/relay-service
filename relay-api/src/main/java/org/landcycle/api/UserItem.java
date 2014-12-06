@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-
 public class UserItem implements Serializable {
 	/**
 	 * 
@@ -15,9 +12,9 @@ public class UserItem implements Serializable {
 
 	private User user;
 	private List<TaggableItem> taggables;
-	
+
 	private TaggableItem taggable;
-	
+
 	public List<TaggableItem> getForSales() {
 		return taggables;
 	}

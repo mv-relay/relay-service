@@ -2,6 +2,7 @@ package org.landcycle.repository;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -21,14 +22,14 @@ public class TaggableEntity {
 	public TaggableEntity() {
 	}
 
-	public TaggableEntity(String id, String name, String img, String description, String tags, String user, String mailacq, String optional, String citta,
-			Double lat, Double lng, int category) {
+	public TaggableEntity(String id, String name, String img, String description, String user, String mailacq, String optional, String citta, Double lat,
+			Double lng, int category) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.img = img;
 		this.description = description;
-		this.tags = tags;
+		// this.tags = tags;
 		this.user = user;
 		this.mailacq = mailacq;
 		this.optional = optional;
@@ -47,8 +48,6 @@ public class TaggableEntity {
 	private String img;
 	@Column(name = "description", length = 1000)
 	private String description;
-	@Column(name = "tags", length = 100)
-	private String tags;
 	@Column(name = "user", length = 100)
 	private String user;
 	@Column(name = "mailacq", length = 100)
@@ -61,7 +60,7 @@ public class TaggableEntity {
 	private Double lng;
 	private int category;
 	private String type;
-	@Column(name = "createdat",updatable = false)
+	@Column(name = "createdat", updatable = false)
 	private Date createdAt;
 
 	@Column(name = "updatedat")
@@ -70,10 +69,14 @@ public class TaggableEntity {
 	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<LikeEntity> likes;
-	
+
 	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<CommentEntity> comments;
+
+	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<TagEntity> tags;
 
 	public String getId() {
 		return id;
@@ -107,11 +110,11 @@ public class TaggableEntity {
 		this.description = description;
 	}
 
-	public String getTags() {
+	public List<TagEntity> getTags() {
 		return tags;
 	}
 
-	public void setTags(String tags) {
+	public void setTags(List<TagEntity> tags) {
 		this.tags = tags;
 	}
 
@@ -227,5 +230,4 @@ public class TaggableEntity {
 		this.comments = comments;
 	}
 
-	
 }

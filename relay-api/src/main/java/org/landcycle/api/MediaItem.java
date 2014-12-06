@@ -3,6 +3,7 @@ package org.landcycle.api;
 public class MediaItem {
 	private String id;
 	private String user;
+	private String stream;
 
 	public String getId() {
 		return id;

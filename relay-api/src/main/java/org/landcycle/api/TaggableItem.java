@@ -1,7 +1,6 @@
 package org.landcycle.api;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -19,7 +18,7 @@ public class TaggableItem implements Serializable {
 	private String imageType;
 	private String img;
 	private String description;
-	private String[] tags;
+	private String [] tags;
 	private Position position;
 	private LikeItem like;
 
@@ -71,11 +70,11 @@ public class TaggableItem implements Serializable {
 		this.img = img;
 	}
 
-	public String[] getTags() {
+	public String []getTags() {
 		return tags;
 	}
 
-	public void setTags(String[] tags) {
+	public void setTags(String []tags) {
 		this.tags = tags;
 	}
 

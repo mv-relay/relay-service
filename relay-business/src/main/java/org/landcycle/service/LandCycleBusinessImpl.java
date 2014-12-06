@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +24,7 @@ import org.landcycle.repository.CommentEntity;
 import org.landcycle.repository.CommentRepository;
 import org.landcycle.repository.LikeEntity;
 import org.landcycle.repository.LikeRepository;
+import org.landcycle.repository.TagEntity;
 import org.landcycle.repository.TaggableEntity;
 import org.landcycle.repository.TaggableRepository;
 import org.landcycle.repository.UserEntity;
@@ -62,10 +64,18 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			TaggableItem taggable = upload.getTaggable();
 			TaggableEntity taggableEntity = new TaggableEntity();
 			String id = upload.getTaggable().getId();
+			if (upload.getTaggable().getTags() != null && upload.getTaggable().getTags().length > 0) {
+				List<TagEntity> tmpTags = new ArrayList<TagEntity>();
+				for (int i = 0; i < upload.getTaggable().getTags().length; i++) {
+					TagEntity tag = new TagEntity(id,upload.getTaggable().getTags()[i]);
+					tmpTags.add(tag);
+				}
+				taggableEntity.setTags(tmpTags);
+			}
 			taggableEntity.setImg(id);
 			taggableEntity.setId(id);
 			taggableEntity.setUser(upload.getUser().getMail());
-			BeanUtils.copyProperties(taggable, taggableEntity, new String[] { "id" });
+			BeanUtils.copyProperties(taggable, taggableEntity, new String[] { "id", "tags" });
 			Position positio = upload.getTaggable().getPosition();
 			if (positio != null) {
 				taggableEntity.setLat(positio.getLat());
@@ -74,6 +84,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			taggableEntity.setImg(getUrlImage() + id + "." + taggable.getImageType());
 			taggable.setImg(getUrlImage() + id + "." + taggable.getImageType());
 			Set<TaggableEntity> tmp = new HashSet<TaggableEntity>();
+
 			tmp.add(taggableEntity);
 			uu.setTaggable(tmp);
 			log.debug("User insert : " + CommonUtils.bean2string(uu));

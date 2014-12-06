@@ -13,7 +13,8 @@ public interface UserRepository extends Repository<UserEntity, String>
 	@Query(nativeQuery = true, value = "select u.*,f.*, ( 6371 * acos( cos( radians(:latitudine) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(:longitudine) ) + sin( radians(:latitudine) ) * sin( radians( lat ) ) ) ) AS distance from User u JOIN Taggable AS f on u.mail = f.user   HAVING distance < 50 ORDER BY distance LIMIT 0 , 50")
 	public Set<UserEntity> findByQuery(@Param("longitudine") Double longitudine,
 			@Param("latitudine") Double latitudine);
-	public UserEntity save(UserEntity wsdl);
+	public UserEntity save(UserEntity taggable);
+	public UserEntity update(UserEntity taggable);
 	public UserEntity findOne(String id);
 	public void delete(String entity);
 	public boolean exists(String entity);
