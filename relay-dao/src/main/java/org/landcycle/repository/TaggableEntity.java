@@ -42,6 +42,8 @@ public class TaggableEntity {
 	@Id
 	@Column(name = "id", length = 100)
 	private String id;
+	@Column(name = "idBeacon", length = 100)
+	private String idBeacon;
 	@Column(name = "name", length = 100)
 	private String name;
 	@Column(name = "img", length = 100)
@@ -88,6 +90,14 @@ public class TaggableEntity {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getIdBeacon() {
+		return idBeacon;
+	}
+
+	public void setIdBeacon(String idBeacon) {
+		this.idBeacon = idBeacon;
 	}
 
 	public String getName() {

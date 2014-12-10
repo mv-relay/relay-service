@@ -10,15 +10,16 @@ public class TaggableItem implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String stream = null;
-//	@JsonIgnore
-//	private byte[] streams = null;
+	// @JsonIgnore
+	// private byte[] streams = null;
 	private String id;
+	private String idBeacon;
 	private String name;
 	private String mailAcq;
 	private String imageType;
 	private String img;
 	private String description;
-	private String [] tags;
+	private String[] tags;
 	private Position position;
 	private LikeItem like;
 	private MediaItem[] medias;
@@ -37,6 +38,14 @@ public class TaggableItem implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getIdBeacon() {
+		return idBeacon;
+	}
+
+	public void setIdBeacon(String idBeacon) {
+		this.idBeacon = idBeacon;
 	}
 
 	public String getName() {
@@ -71,11 +80,11 @@ public class TaggableItem implements Serializable {
 		this.img = img;
 	}
 
-	public String []getTags() {
+	public String[] getTags() {
 		return tags;
 	}
 
-	public void setTags(String []tags) {
+	public void setTags(String[] tags) {
 		this.tags = tags;
 	}
 
@@ -111,12 +120,12 @@ public class TaggableItem implements Serializable {
 		this.medias = medias;
 	}
 
-//	public byte[] getStreams() {
-//		return streams;
-//	}
-//
-//	public void setStreams(byte[] streams) {
-//		this.streams = streams;
-//	}
-	
+	// public byte[] getStreams() {
+	// return streams;
+	// }
+	//
+	// public void setStreams(byte[] streams) {
+	// this.streams = streams;
+	// }
+
 }
