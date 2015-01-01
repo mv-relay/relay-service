@@ -23,4 +23,6 @@ public interface LandCycleBusiness {
 
 	CommentItem saveComment(CommentItem comment) throws Exception;
 
+	List<TaggableItem> findByUser(String user) throws Exception;
+
 }

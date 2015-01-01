@@ -21,7 +21,7 @@ public class LikeEntity {
 	}
 
 	@Id
-	@Column(name = "id", length = 100)
+	@Column(name = "idTaggable", length = 100)
 	private String id;
 	@Column(name = "user", length = 100)
 	private String user;

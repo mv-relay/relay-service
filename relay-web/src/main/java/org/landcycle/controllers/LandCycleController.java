@@ -1,5 +1,6 @@
 package org.landcycle.controllers;
 
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -76,6 +77,22 @@ public class LandCycleController extends BaseRestController {
 			item.setTaggable(taggable);
 			TaggableItem items = landCycleBusiness.findOne(item);
 			logger.debug("findAround : " + CommonUtils.bean2string(items));
+			return ariaResponse(items);
+		} catch (LandcycleException e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw e;
+		} catch (Exception e) {
+			logger.error("UNHANDLED EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+		
+	}
+	
+	@RequestMapping(value = "/findByUser/{mail:.+}", method = RequestMethod.GET)
+	public @ResponseBody JsonResponseData<TaggableItem> findByUser(@PathVariable("mail") String id) {
+		try {
+			List<TaggableItem> items = landCycleBusiness.findByUser(URLDecoder.decode(id,"UTF-8"));
+			logger.debug("findByUser : " + CommonUtils.bean2string(items));
 			return ariaResponse(items);
 		} catch (LandcycleException e) {
 			logger.error("APPLICATION EXCEPTION", e);

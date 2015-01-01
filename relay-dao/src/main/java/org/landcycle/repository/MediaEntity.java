@@ -18,20 +18,14 @@ public class MediaEntity {
 	public MediaEntity() {
 	}
 
-	public MediaEntity(String id, String media) {
-		super();
-		this.id = id;
-		this.media = media;
-	}
-
 	@Id
 	@GeneratedValue(generator = "system-uuid")
 	@GenericGenerator(name = "system-uuid", strategy = "uuid")
 	@Column(name = "uuid", unique = true)
 	private String uuid;
 
-	@Column(name = "id", length = 100)
-	private String id;
+	@Column(name = "idTaggable", length = 100)
+	private String idTaggable;
 	@Column(name = "media", length = 100)
 	private String media;
 	@Column(name = "path", length = 100)
@@ -43,12 +37,12 @@ public class MediaEntity {
 	@Column(name = "updatedat")
 	private Date updatedAt;
 
-	public String getId() {
-		return id;
+	public String getIdTaggable() {
+		return idTaggable;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setIdTaggable(String idTaggable) {
+		this.idTaggable = idTaggable;
 	}
 
 	@PrePersist

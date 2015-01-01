@@ -78,7 +78,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			taggableEntity.setImg(id);
 			taggableEntity.setId(id);
 			taggableEntity.setUser(upload.getUser().getMail());
-			BeanUtils.copyProperties(taggable, taggableEntity, new String[] { "id", "tags" });
+			BeanUtils.copyProperties(taggable, taggableEntity, new String[] { "id", "tags", "medias" });
 			Position positio = upload.getTaggable().getPosition();
 			if (positio != null) {
 				taggableEntity.setLat(positio.getLat());
@@ -102,7 +102,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	public MediaItem saveOrUpdateMedia(MediaItem media) throws Exception {
 
 		MediaEntity me = new MediaEntity();
-		me.setId(media.getId());
+		me.setIdTaggable(media.getId());
 		me.setName(media.getName());
 		me.setPath(getUrlImage() + media.getId() + "." + media.getType());
 		mediaRepository.save(me);
@@ -264,6 +264,25 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		TaggableItem response = new TaggableItem();
 		if (userEntity != null)
 			BeanUtils.copyProperties(userEntity, response);
+
+		return response;
+	}
+
+	@Override
+	public List<TaggableItem> findByUser(String user) throws Exception {
+
+		List<TaggableItem> response = new ArrayList<TaggableItem>();
+		log.debug("user : " + user);
+		List<TaggableEntity> userEntity = taggableRepository.findByUser(user);
+		log.debug("Find by user " + CommonUtils.bean2string(userEntity));
+
+		if (userEntity != null && userEntity.size() > 0) {
+			for (TaggableEntity taggableEntity : userEntity) {
+				TaggableItem tmp = new TaggableItem();
+				BeanUtils.copyProperties(taggableEntity, tmp);
+				response.add(tmp);
+			}
+		}
 
 		return response;
 	}

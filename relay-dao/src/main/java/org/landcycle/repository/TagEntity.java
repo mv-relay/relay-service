@@ -18,32 +18,32 @@ public class TagEntity {
 	public TagEntity() {
 	}
 
-	public TagEntity(String id, String tag) {
+	public TagEntity(String idTaggable, String tag) {
 		super();
-		this.id = id;
+		this.idTaggable = idTaggable;
 		this.tag = tag;
 	}
-
 
 	@Id
 	@GeneratedValue(generator = "system-uuid")
 	@GenericGenerator(name = "system-uuid", strategy = "uuid")
 	@Column(name = "uuid", unique = true)
 	private String uuid;
-	
-	@Column(name = "id", length = 100)
-	private String id;
+
+	@Column(name = "idTaggable", length = 100)
+	private String idTaggable;
+
 	@Column(name = "tag", length = 100)
 	private String tag;
 	@Column(name = "createdat", updatable = false)
 	private Date createdAt;
 
-	public String getId() {
-		return id;
+	public String getIdTaggable() {
+		return idTaggable;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setIdTaggable(String idTaggable) {
+		this.idTaggable = idTaggable;
 	}
 
 	public String getTag() {

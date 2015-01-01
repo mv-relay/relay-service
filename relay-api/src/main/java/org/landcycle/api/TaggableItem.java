@@ -19,6 +19,8 @@ public class TaggableItem implements Serializable {
 	private String imageType;
 	private String img;
 	private String description;
+	private String type;
+	private String optional;
 	private String[] tags;
 	private Position position;
 	private LikeItem like;
@@ -120,12 +122,19 @@ public class TaggableItem implements Serializable {
 		this.medias = medias;
 	}
 
-	// public byte[] getStreams() {
-	// return streams;
-	// }
-	//
-	// public void setStreams(byte[] streams) {
-	// this.streams = streams;
-	// }
+	public String getType() {
+		return type;
+	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getOptional() {
+		return optional;
+	}
+
+	public void setOptional(String optional) {
+		this.optional = optional;
+	}
 }

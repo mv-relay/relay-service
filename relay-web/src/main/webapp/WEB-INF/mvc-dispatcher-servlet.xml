@@ -4,28 +4,39 @@
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans     
-        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context 
-        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/jee
-		http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/jee/spring-jee.xsd
         http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/aop 
-		http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<!-- SPRING CONFIG -->
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+	<bean id="contentNegotiationManager"
+		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="defaultContentType" value="application/json" />
+		<property name="favorPathExtension" value="false" />
+		<property name="favorParameter" value="false" />
+		<property name="parameterName" value="mediaType" />
+		<property name="ignoreAcceptHeader" value="false" />
+		<property name="useJaf" value="false" />
+	</bean>
+	
 	<bean
 		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 
 	<context:component-scan base-package="org.landcycle" />
-	
+
 	<context:annotation-config />
 
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 
 	<bean id="jacksonObjectMapper" class="org.landcycle.controllers.utils.MapperUtil" />
-
+	
 	<mvc:annotation-driven>
 		<mvc:message-converters>
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
@@ -40,7 +51,7 @@
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 
-<!-- 	<import resource="classpath:/dao-context.xml" /> -->
+	<!-- <import resource="classpath:/dao-context.xml" /> -->
 	<import resource="classpath:cfg-certificate-jndi.xml" />
 
 	<bean id="logfile" class="org.springframework.jndi.JndiObjectFactoryBean"
@@ -50,7 +61,7 @@
 
 
 	<bean id="RestFilter" class="org.landcycle.controllers.RestFilter" />
-	
+
 	<bean id="log4jInitializationRegistration"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
@@ -62,4 +73,7 @@
 			</list>
 		</property>
 	</bean>
+	
+
+
 </beans>

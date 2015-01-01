@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -29,7 +30,6 @@ public class TaggableEntity {
 		this.name = name;
 		this.img = img;
 		this.description = description;
-		// this.tags = tags;
 		this.user = user;
 		this.mailacq = mailacq;
 		this.optional = optional;
@@ -40,7 +40,7 @@ public class TaggableEntity {
 	}
 
 	@Id
-	@Column(name = "id", length = 100)
+	@Column(name = "idTaggable", length = 100)
 	private String id;
 	@Column(name = "idBeacon", length = 100)
 	private String idBeacon;
@@ -48,13 +48,15 @@ public class TaggableEntity {
 	private String name;
 	@Column(name = "img", length = 100)
 	private String img;
-	@Column(name = "description", length = 1000)
+	@Lob
+	@Column(name = "description", length = 10000)
 	private String description;
 	@Column(name = "user", length = 100)
 	private String user;
 	@Column(name = "mailacq", length = 100)
 	private String mailacq;
-	@Column(name = "optional", length = 100)
+	@Lob
+	@Column(name = "optional", length = 10000)
 	private String optional;
 	@Column(name = "city", length = 150)
 	private String citta;
@@ -68,21 +70,25 @@ public class TaggableEntity {
 	@Column(name = "updatedat")
 	private Date updatedAt;
 
-	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
+	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<LikeEntity> likes;
 
-	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
+	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<CommentEntity> comments;
 
-	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
+	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<TagEntity> tags;
 
-	@JoinColumn(name = "id", referencedColumnName = "id", updatable = false)
+	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<MediaEntity> media;
+	
+	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<RouteTagEntity> routeTag;
 
 	public String getId() {
 		return id;
@@ -251,5 +257,13 @@ public class TaggableEntity {
 	public void setMedia(List<MediaEntity> media) {
 		this.media = media;
 	}
+
+//	public List<RouteTagEntity> getRoutTag() {
+//		return routTag;
+//	}
+//
+//	public void setRoutTag(List<RouteTagEntity> routTag) {
+//		this.routTag = routTag;
+//	}
 
 }
