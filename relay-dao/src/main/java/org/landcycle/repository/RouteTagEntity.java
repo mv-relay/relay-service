@@ -13,31 +13,26 @@ import org.hibernate.annotations.GenericGenerator;
 public class RouteTagEntity {
 
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
-	@Column(name = "uuid", unique = true)
-	private String uuid;
+	@Column(name = "idTaggable", length = 100)
+	private String id;
 
-	
-//	@Column(name = "idRoute", length = 100)
-//	private String idRoute;
+	@Column(name = "idRouteExt", length = 100)
+	private String idRouteExt;
 
-	public String getUuid() {
-		return uuid;
+	public String getId() {
+		return id;
 	}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-	
+	public String getIdRouteExt() {
+		return idRouteExt;
+	}
 
-//	public String getIdRoute() {
-//		return idRoute;
-//	}
-//
-//	public void setIdRoute(String idRoute) {
-//		this.idRoute = idRoute;
-//	}
+	public void setIdRouteExt(String idRouteExt) {
+		this.idRouteExt = idRouteExt;
+	}
 
 }

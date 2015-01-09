@@ -17,6 +17,8 @@ import org.landcycle.api.CommentItem;
 import org.landcycle.api.LikeItem;
 import org.landcycle.api.MediaItem;
 import org.landcycle.api.Position;
+import org.landcycle.api.RouteItem;
+import org.landcycle.api.RouteTagItem;
 import org.landcycle.api.TaggableItem;
 import org.landcycle.api.UserItem;
 import org.landcycle.repository.CommentEntity;
@@ -25,6 +27,9 @@ import org.landcycle.repository.LikeEntity;
 import org.landcycle.repository.LikeRepository;
 import org.landcycle.repository.MediaEntity;
 import org.landcycle.repository.MediaRepository;
+import org.landcycle.repository.RouteEntity;
+import org.landcycle.repository.RouteRepository;
+import org.landcycle.repository.RouteTagEntity;
 import org.landcycle.repository.TagEntity;
 import org.landcycle.repository.TaggableEntity;
 import org.landcycle.repository.TaggableRepository;
@@ -55,6 +60,8 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	CommentRepository commentRepository;
 	@Autowired
 	MediaRepository mediaRepository;
+	@Autowired
+	RouteRepository routeRepository;
 
 	@Override
 	public UserItem saveOrUpdateTaggable(UserItem upload) throws Exception {
@@ -250,6 +257,49 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				}
 				ff.setMedias(mediaRespone);
 			}
+			if (tagEntity.getRoute() != null && tagEntity.getRoute().size() > 0) {
+				List<RouteEntity> route = tagEntity.getRoute();
+				RouteItem routeResponse = new RouteItem();
+				int j = 0;
+				for (RouteEntity routeEntity : route) {
+					BeanUtils.copyProperties(routeEntity, routeResponse);
+					List<RouteTagEntity> routes = routeEntity.getRouteTag();
+					RouteTagItem[] responseRouteTag = new RouteTagItem[routes.size()];
+					for (RouteTagEntity routeTagEntity : routes) {
+						RouteTagItem tmp = new RouteTagItem();
+						BeanUtils.copyProperties(routeTagEntity, tmp);
+						responseRouteTag[j] = tmp;
+						j++;
+					}
+				}
+				ff.setRoute(routeResponse);
+			}
+			if (tagEntity.getLikes() != null && tagEntity.getLikes().size() > 0) {
+				int i = 0;
+				List<LikeEntity> likeEntity = tagEntity.getLikes();
+				LikeItem[] likeResponse = new LikeItem[likeEntity.size()];
+				for (LikeEntity likeEnt : likeEntity) {
+					
+					LikeItem ttmp = new LikeItem();
+					BeanUtils.copyProperties(likeEnt, ttmp);
+					likeResponse[i] = ttmp;
+					i++;
+				}
+				ff.setLikes(likeResponse);
+			}
+			if (tagEntity.getComments() != null && tagEntity.getComments().size() > 0) {
+				int i = 0;
+				List<CommentEntity> commentsEntity = tagEntity.getComments();
+				CommentItem[] commentResponse = new CommentItem[commentsEntity.size()];
+				for (CommentEntity commentEntity : commentsEntity) {
+
+					CommentItem ttmp = new CommentItem();
+					BeanUtils.copyProperties(commentEntity, ttmp);
+					commentResponse[i] = ttmp;
+					i++;
+				}
+				ff.setComments(commentResponse);
+			}
 			response.add(ff);
 		}
 
@@ -336,5 +386,22 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		l.setComment(comment.getComment());
 		commentRepository.save(l);
 		return comment;
+	}
+
+	@Override
+	public RouteItem saveRoute(RouteItem route) throws Exception {
+		// TODO Auto-generated method stub
+		RouteEntity l = new RouteEntity();
+		l.setId(route.getId());
+		l.setDescRoute(route.getDescRoute());
+		RouteTagItem[] routeTag = route.getRoutes();
+		for (int i = 0; i < routeTag.length; i++) {
+			RouteTagEntity rte = new RouteTagEntity();
+			rte.setId(route.getId());
+			rte.setIdRouteExt(routeTag[i].getIdRouteExt());
+			l.getRouteTag().add(rte);
+		}
+		routeRepository.save(l);
+		return route;
 	}
 }

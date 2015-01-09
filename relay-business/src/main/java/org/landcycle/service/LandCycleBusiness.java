@@ -5,6 +5,7 @@ import java.util.List;
 import org.landcycle.api.CommentItem;
 import org.landcycle.api.LikeItem;
 import org.landcycle.api.MediaItem;
+import org.landcycle.api.RouteItem;
 import org.landcycle.api.TaggableItem;
 import org.landcycle.api.UserItem;
 
@@ -24,5 +25,7 @@ public interface LandCycleBusiness {
 	CommentItem saveComment(CommentItem comment) throws Exception;
 
 	List<TaggableItem> findByUser(String user) throws Exception;
+
+	RouteItem saveRoute(RouteItem comment) throws Exception;
 
 }

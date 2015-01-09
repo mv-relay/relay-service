@@ -1,20 +1,17 @@
 package org.landcycle.repository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "Route")
@@ -22,13 +19,9 @@ public class RouteEntity {
 	public RouteEntity() {
 	}
 
-	
-
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
-	@Column(name = "idRoute", unique = true)
-	private String idRoute;
+	@Column(name = "idTaggable", length = 100)
+	private String id;
 
 	@Column(name = "descRoute", length = 500)
 	private String descRoute;
@@ -36,19 +29,21 @@ public class RouteEntity {
 	@Column(name = "createdat", updatable = false)
 	private Date createdAt;
 
-	@JoinColumn(name = "idRoute", referencedColumnName = "idRoute", updatable = false)
+	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<RouteTagEntity> routeTag;
 
-	public String getIdRoute() {
-		return idRoute;
+	public String getId() {
+		return id;
 	}
 
-	public void setIdRoute(String idRoute) {
-		this.idRoute = idRoute;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public List<RouteTagEntity> getRouteTag() {
+		if(routeTag == null)
+			routeTag = new ArrayList<RouteTagEntity>();
 		return routeTag;
 	}
 

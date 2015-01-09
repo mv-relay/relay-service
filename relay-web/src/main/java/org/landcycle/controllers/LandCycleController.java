@@ -11,6 +11,7 @@ import org.landcycle.api.CommentItem;
 import org.landcycle.api.LikeItem;
 import org.landcycle.api.MediaItem;
 import org.landcycle.api.Position;
+import org.landcycle.api.RouteItem;
 import org.landcycle.api.TaggableItem;
 import org.landcycle.api.UserItem;
 import org.landcycle.api.exception.LandcycleException;
@@ -165,6 +166,17 @@ public class LandCycleController extends BaseRestController {
 		try {
 			landCycleBusiness.saveComment(like);
 			return ariaResponse(like);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	
+	@RequestMapping(value = "/Route", method = RequestMethod.POST)
+	public @ResponseBody JsonResponseData<RouteItem> route(@RequestBody RouteItem route) {
+		try {
+			landCycleBusiness.saveRoute(route);
+			return ariaResponse(route);
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);
 			throw new LandcycleException(e);

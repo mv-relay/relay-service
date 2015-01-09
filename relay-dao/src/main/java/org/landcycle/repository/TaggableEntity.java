@@ -1,9 +1,8 @@
 package org.landcycle.repository;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -72,11 +71,11 @@ public class TaggableEntity {
 
 	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<LikeEntity> likes;
+	private List<LikeEntity> likes;
 
 	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<CommentEntity> comments;
+	private List<CommentEntity> comments;
 
 	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL)
@@ -85,10 +84,12 @@ public class TaggableEntity {
 	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<MediaEntity> media;
-	
+
 	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<RouteTagEntity> routeTag;
+	// @OneToOne(cascade = CascadeType.ALL, optional = false, fetch =
+	// FetchType.EAGER)
+	private List<RouteEntity> route;
 
 	public String getId() {
 		return id;
@@ -194,17 +195,17 @@ public class TaggableEntity {
 		this.category = category;
 	}
 
-	public Set<LikeEntity> getLikes() {
+	public List<LikeEntity> getLikes() {
 		return likes;
 	}
 
-	public void setLikes(Set<LikeEntity> likes) {
+	public void setLikes(List<LikeEntity> likes) {
 		this.likes = likes;
 	}
 
-	public void addForSale(LikeEntity likes) {
+	public void addLikes(LikeEntity likes) {
 		if (this.likes == null)
-			this.likes = new HashSet<LikeEntity>();
+			this.likes = new ArrayList<LikeEntity>();
 		this.likes.add(likes);
 	}
 
@@ -242,15 +243,19 @@ public class TaggableEntity {
 		this.updatedAt = updatedAt;
 	}
 
-	public Set<CommentEntity> getComments() {
+	public List<CommentEntity> getComments() {
+		if(comments == null)
+			comments = new ArrayList<CommentEntity>();
 		return comments;
 	}
 
-	public void setComments(Set<CommentEntity> comments) {
+	public void setComments(List<CommentEntity> comments) {
 		this.comments = comments;
 	}
 
 	public List<MediaEntity> getMedia() {
+		if(media == null)
+			media = new ArrayList<MediaEntity>();
 		return media;
 	}
 
@@ -258,12 +263,12 @@ public class TaggableEntity {
 		this.media = media;
 	}
 
-//	public List<RouteTagEntity> getRoutTag() {
-//		return routTag;
-//	}
-//
-//	public void setRoutTag(List<RouteTagEntity> routTag) {
-//		this.routTag = routTag;
-//	}
+	public List<RouteEntity> getRoute() {
+		return route;
+	}
+
+	public void setRoute(List<RouteEntity> route) {
+		this.route = route;
+	}
 
 }
