@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,7 +21,9 @@ import org.landcycle.api.MediaItem;
 import org.landcycle.api.Position;
 import org.landcycle.api.RouteItem;
 import org.landcycle.api.RouteTagItem;
+import org.landcycle.api.TaggableBaseItem;
 import org.landcycle.api.TaggableItem;
+import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
 import org.landcycle.repository.CommentEntity;
 import org.landcycle.repository.CommentRepository;
@@ -244,6 +248,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			pos.setLat(tagEntity.getLat());
 			pos.setLng(tagEntity.getLng());
 			ff.setPosition(pos);
+			
 			if (tagEntity.getMedia() != null && tagEntity.getMedia().size() > 0) {
 				int i = 0;
 				List<MediaEntity> media = tagEntity.getMedia();
@@ -257,10 +262,72 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				}
 				ff.setMedias(mediaRespone);
 			}
+			if (tagEntity.getLikes() != null && tagEntity.getLikes().size() > 0) {
+				List<LikeEntity> likeEntity = tagEntity.getLikes();
+				LikeItem likeResponse = new LikeItem();
+				likeResponse.setCount(tagEntity.getLikes().size());
+				likeResponse.setMyLike(computeUserLike(likeEntity, taggable));
+
+				ff.setLikes(likeResponse);
+			}
+
+			response.add(ff);
+		}
+
+		return response;
+	}
+
+	private boolean computeUserLike(List<LikeEntity> likeEntity, TaggableItem taggable) throws Exception {
+		if (taggable.getUser() != null) {
+			User user = taggable.getUser();
+			for (LikeEntity likeEnt : likeEntity) {
+				if (likeEnt.getUser() != null && user.getMail().equalsIgnoreCase(likeEnt.getUser())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private RouteItem computeTagRoute(List<String> idTaggableExt, RouteItem routeResponse) throws Exception {
+		// TODO Auto-generated method stub
+		List<TaggableEntity> response = taggableRepository.findByIdIn(idTaggableExt);
+		log.debug("response in : " + CommonUtils.bean2string(response));
+		Map<String, TaggableEntity> map = new HashMap<String, TaggableEntity>();
+		for (TaggableEntity taggableEntity : response) {
+			map.put(taggableEntity.getId(), taggableEntity);
+		}
+		RouteTagItem[] rti = routeResponse.getRoutes();
+		for (int i = 0; i < rti.length; i++) {
+			RouteTagItem tmp = rti[i];
+			TaggableEntity tag = map.get(tmp.getIdTaggableExt());
+			TaggableBaseItem baseItem = new TaggableBaseItem();
+			BeanUtils.copyProperties(tag, baseItem);
+			tmp.setTaggable(baseItem);
+		}
+		return routeResponse;
+	}
+
+	@Override
+	public TaggableItem findOne(UserItem user) throws Exception {
+
+		TaggableEntity tagEntity = taggableRepository.findOne(user.getTaggable().getId());
+		log.debug("Find one " + CommonUtils.bean2string(tagEntity));
+		TaggableItem response = new TaggableItem();
+		if (tagEntity != null) {
+			BeanUtils.copyProperties(tagEntity, response);
+			Position pos = new Position();
+			pos.setLat(tagEntity.getLat());
+			pos.setLng(tagEntity.getLng());
+			response.setPosition(pos);
+
 			if (tagEntity.getRoute() != null && tagEntity.getRoute().size() > 0) {
+				List<String> idTaggableExt = new ArrayList<String>();
 				List<RouteEntity> route = tagEntity.getRoute();
 				RouteItem routeResponse = new RouteItem();
 				int j = 0;
+				// è un ciclo ma un tag può avere solo un percorso ( per
+				// sviluppi futuri)
 				for (RouteEntity routeEntity : route) {
 					BeanUtils.copyProperties(routeEntity, routeResponse);
 					List<RouteTagEntity> routes = routeEntity.getRouteTag();
@@ -269,23 +336,14 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 						RouteTagItem tmp = new RouteTagItem();
 						BeanUtils.copyProperties(routeTagEntity, tmp);
 						responseRouteTag[j] = tmp;
+
+						idTaggableExt.add(routeTagEntity.getIdTaggableExt());
 						j++;
 					}
+					routeResponse.setRoutes(responseRouteTag);
 				}
-				ff.setRoute(routeResponse);
-			}
-			if (tagEntity.getLikes() != null && tagEntity.getLikes().size() > 0) {
-				int i = 0;
-				List<LikeEntity> likeEntity = tagEntity.getLikes();
-				LikeItem[] likeResponse = new LikeItem[likeEntity.size()];
-				for (LikeEntity likeEnt : likeEntity) {
-					
-					LikeItem ttmp = new LikeItem();
-					BeanUtils.copyProperties(likeEnt, ttmp);
-					likeResponse[i] = ttmp;
-					i++;
-				}
-				ff.setLikes(likeResponse);
+				routeResponse = computeTagRoute(idTaggableExt, routeResponse);
+				response.setRoute(routeResponse);
 			}
 			if (tagEntity.getComments() != null && tagEntity.getComments().size() > 0) {
 				int i = 0;
@@ -298,22 +356,9 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 					commentResponse[i] = ttmp;
 					i++;
 				}
-				ff.setComments(commentResponse);
+				response.setComments(commentResponse);
 			}
-			response.add(ff);
 		}
-
-		return response;
-	}
-
-	@Override
-	public TaggableItem findOne(UserItem user) throws Exception {
-
-		TaggableEntity userEntity = taggableRepository.findOne(user.getTaggable().getId());
-		log.debug("Find one " + CommonUtils.bean2string(userEntity));
-		TaggableItem response = new TaggableItem();
-		if (userEntity != null)
-			BeanUtils.copyProperties(userEntity, response);
 
 		return response;
 	}
@@ -398,7 +443,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		for (int i = 0; i < routeTag.length; i++) {
 			RouteTagEntity rte = new RouteTagEntity();
 			rte.setId(route.getId());
-			rte.setIdRouteExt(routeTag[i].getIdRouteExt());
+			rte.setIdTaggableExt(routeTag[i].getIdTaggableExt());
 			l.getRouteTag().add(rte);
 		}
 		routeRepository.save(l);

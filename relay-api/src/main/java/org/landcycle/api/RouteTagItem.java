@@ -2,21 +2,29 @@ package org.landcycle.api;
 
 import java.io.Serializable;
 
-public class RouteTagItem implements Serializable{
+public class RouteTagItem implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String idRouteExt;
+	private String idTaggableExt;
+	private TaggableBaseItem taggable;
 
-	public String getIdRouteExt() {
-		return idRouteExt;
+	public String getIdTaggableExt() {
+		return idTaggableExt;
 	}
 
-	public void setIdRouteExt(String idRouteExt) {
-		this.idRouteExt = idRouteExt;
+	public void setIdTaggableExt(String idTaggableExt) {
+		this.idTaggableExt = idTaggableExt;
 	}
-	
-	
+
+	public TaggableBaseItem getTaggable() {
+		return taggable;
+	}
+
+	public void setTaggable(TaggableBaseItem taggable) {
+		this.taggable = taggable;
+	}
+
 }

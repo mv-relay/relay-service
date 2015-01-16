@@ -23,10 +23,11 @@ public class TaggableItem implements Serializable {
 	private String optional;
 	private String[] tags;
 	private Position position;
-	private LikeItem[] likes;
+	private LikeItem likes;
 	private CommentItem[] comments;
 	private MediaItem[] medias;
 	private RouteItem route;
+	private User user;
 
 	public String getStream() {
 		return stream;
@@ -108,11 +109,11 @@ public class TaggableItem implements Serializable {
 		this.position = position;
 	}
 
-	public LikeItem[] getLikes() {
+	public LikeItem getLikes() {
 		return likes;
 	}
 
-	public void setLikes(LikeItem[] likes) {
+	public void setLikes(LikeItem likes) {
 		this.likes = likes;
 	}
 
@@ -154,6 +155,14 @@ public class TaggableItem implements Serializable {
 
 	public void setRoute(RouteItem route) {
 		this.route = route;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

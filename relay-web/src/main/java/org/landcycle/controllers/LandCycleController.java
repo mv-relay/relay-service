@@ -13,6 +13,7 @@ import org.landcycle.api.MediaItem;
 import org.landcycle.api.Position;
 import org.landcycle.api.RouteItem;
 import org.landcycle.api.TaggableItem;
+import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
 import org.landcycle.api.exception.LandcycleException;
 import org.landcycle.api.rest.JsonResponseData;
@@ -45,7 +46,7 @@ public class LandCycleController extends BaseRestController {
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	public @ResponseBody JsonResponseData<TaggableItem> findAround(@RequestParam(value = "lat", required = false) String lat,
 			@RequestParam(value = "lng", required = false) String lng,
-			@RequestParam(value = "tags", required = false) String tags, HttpServletResponse response) {
+			@RequestParam(value = "tags", required = false) String tags, @RequestParam(value = "mail", required = false) String mail) {
 		TaggableItem sale = new TaggableItem();
 		try {
 			if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
@@ -55,6 +56,11 @@ public class LandCycleController extends BaseRestController {
 				sale.setPosition(pos);
 				if (tags != null && tags.length() > 0)
 					sale.setTags(tags.split(","));
+			}
+			if(mail!= null && !mail.isEmpty()){
+				User user = new User();
+				user.setMail(mail);
+				sale.setUser(user);
 			}
 			List<TaggableItem> items = landCycleBusiness.find(sale);
 			logger.debug("findAround : " + CommonUtils.bean2string(items));

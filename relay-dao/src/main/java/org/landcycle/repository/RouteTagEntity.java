@@ -16,8 +16,8 @@ public class RouteTagEntity {
 	@Column(name = "idTaggable", length = 100)
 	private String id;
 
-	@Column(name = "idRouteExt", length = 100)
-	private String idRouteExt;
+	@Column(name = "idTaggableExt", length = 100)
+	private String idTaggableExt;
 
 	public String getId() {
 		return id;
@@ -27,12 +27,12 @@ public class RouteTagEntity {
 		this.id = id;
 	}
 
-	public String getIdRouteExt() {
-		return idRouteExt;
+	public String getIdTaggableExt() {
+		return idTaggableExt;
 	}
 
-	public void setIdRouteExt(String idRouteExt) {
-		this.idRouteExt = idRouteExt;
+	public void setIdTaggableExt(String idTaggableExt) {
+		this.idTaggableExt = idTaggableExt;
 	}
 
 }
