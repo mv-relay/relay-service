@@ -28,4 +28,8 @@ public interface LandCycleBusiness {
 
 	RouteItem saveRoute(RouteItem comment) throws Exception;
 
+	void deleteLike(LikeItem like) throws Exception;
+
+	List<LikeItem> getLikes(LikeItem like)throws Exception;
+
 }

@@ -29,6 +29,7 @@ import org.landcycle.repository.CommentEntity;
 import org.landcycle.repository.CommentRepository;
 import org.landcycle.repository.LikeEntity;
 import org.landcycle.repository.LikeRepository;
+import org.landcycle.repository.LikesKey;
 import org.landcycle.repository.MediaEntity;
 import org.landcycle.repository.MediaRepository;
 import org.landcycle.repository.RouteEntity;
@@ -248,7 +249,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			pos.setLat(tagEntity.getLat());
 			pos.setLng(tagEntity.getLng());
 			ff.setPosition(pos);
-			
+
 			if (tagEntity.getMedia() != null && tagEntity.getMedia().size() > 0) {
 				int i = 0;
 				List<MediaEntity> media = tagEntity.getMedia();
@@ -263,6 +264,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				ff.setMedias(mediaRespone);
 			}
 			if (tagEntity.getLikes() != null && tagEntity.getLikes().size() > 0) {
+				log.debug("compute likes");
 				List<LikeEntity> likeEntity = tagEntity.getLikes();
 				LikeItem likeResponse = new LikeItem();
 				likeResponse.setCount(tagEntity.getLikes().size());
@@ -281,7 +283,9 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		if (taggable.getUser() != null) {
 			User user = taggable.getUser();
 			for (LikeEntity likeEnt : likeEntity) {
-				if (likeEnt.getUser() != null && user.getMail().equalsIgnoreCase(likeEnt.getUser())) {
+				log.debug("Likes key : " + CommonUtils.bean2string(likeEnt));
+				LikesKey key = likeEnt.getLikesKey();
+				if (key != null && key.getUser() != null && user.getMail().equalsIgnoreCase(key.getUser())) {
 					return true;
 				}
 			}
@@ -312,7 +316,6 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	public TaggableItem findOne(UserItem user) throws Exception {
 
 		TaggableEntity tagEntity = taggableRepository.findOne(user.getTaggable().getId());
-		log.debug("Find one " + CommonUtils.bean2string(tagEntity));
 		TaggableItem response = new TaggableItem();
 		if (tagEntity != null) {
 			BeanUtils.copyProperties(tagEntity, response);
@@ -382,16 +385,6 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		return response;
 	}
 
-	// @Override
-	// public UserItem upload(UserItem upload) throws Exception {
-	// String fileName = uploadFileName(upload.getTaggable().getImageType(),
-	// upload.getTaggable().getId(), getDirUpload());
-	// log.debug("##############fileName : " + fileName);
-	// writeFile(upload.getTaggable().getStreams(), fileName,
-	// upload.getTaggable().getImageType());
-	// return upload;
-	// }
-
 	@Override
 	public MediaItem uploadMedia(MediaItem upload) throws Exception {
 		String fileName = uploadFileName(upload.getType(), upload.getId(), getDirUpload());
@@ -413,13 +406,41 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	}
 
 	@Override
+	public List<LikeItem> getLikes(LikeItem like) throws Exception {
+
+		List<LikeItem> resp = new ArrayList<LikeItem>();
+		List<LikeEntity> respEntity = likeRepository.findByUser(like.getUser());
+		for (LikeEntity likeEntity : respEntity) {
+			LikeItem tmp = new LikeItem();
+			tmp.setId(likeEntity.getLikesKey().getId());
+			tmp.setUser(likeEntity.getLikesKey().getUser());
+			resp.add(tmp);
+		}
+		return resp;
+//		return null;
+	}
+	
+	@Override
 	public LikeItem saveLike(LikeItem like) throws Exception {
 		// TODO Auto-generated method stub
 		LikeEntity l = new LikeEntity();
-		l.setId(like.getId());
-		l.setUser(like.getUser());
+		LikesKey key = new LikesKey();
+
+		key.setId(like.getId());
+		key.setUser(like.getUser());
+		l.setLikesKey(key);
 		likeRepository.save(l);
 		return like;
+	}
+
+	@Override
+	public void deleteLike(LikeItem like) throws Exception {
+		LikesKey key = new LikesKey();
+		LikeEntity l = new LikeEntity();
+		key.setId(like.getId());
+		key.setUser(like.getUser());
+		l.setLikesKey(key);
+		likeRepository.delete(l);
 	}
 
 	@Override
@@ -449,4 +470,6 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		routeRepository.save(l);
 		return route;
 	}
+
+	
 }

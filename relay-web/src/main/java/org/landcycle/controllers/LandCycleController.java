@@ -156,10 +156,38 @@ public class LandCycleController extends BaseRestController {
 		return ariaResponse(new UserItem());
 	}
 
+	@RequestMapping(value = "/Like/{user:.+}", method = RequestMethod.GET)
+	public @ResponseBody JsonResponseData<LikeItem> getlike(@PathVariable("user") String user) {
+		try {
+			LikeItem like = new LikeItem();
+			like.setUser(user);
+			List<LikeItem> resp = landCycleBusiness.getLikes(like);
+			return ariaResponse(resp);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	
 	@RequestMapping(value = "/Like ", method = RequestMethod.POST)
 	public @ResponseBody JsonResponseData<LikeItem> like(@RequestBody LikeItem like, HttpServletResponse response) {
 		try {
 			landCycleBusiness.saveLike(like);
+			return ariaResponse(like);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	
+	
+	@RequestMapping(value = "/Like/{id}/{user:.+}", method = RequestMethod.DELETE)
+	public @ResponseBody JsonResponseData<LikeItem> deleteLike(@PathVariable("id") String id,@PathVariable("user") String user) {
+		try {
+			LikeItem like = new LikeItem();
+			like.setId(id);
+			like.setUser(user);
+			landCycleBusiness.deleteLike(like);
 			return ariaResponse(like);
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);
