@@ -30,6 +30,8 @@ public interface LandCycleBusiness {
 
 	void deleteLike(LikeItem like) throws Exception;
 
-	List<LikeItem> getLikes(LikeItem like)throws Exception;
+	List<LikeItem> getLikes(LikeItem like) throws Exception;
+
+	List<TaggableItem> getTaggableLikes(LikeItem like) throws Exception;
 
 }

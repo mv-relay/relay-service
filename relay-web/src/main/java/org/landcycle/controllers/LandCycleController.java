@@ -21,12 +21,14 @@ import org.landcycle.service.LandCycleBusiness;
 import org.landcycle.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/land")
@@ -169,6 +171,19 @@ public class LandCycleController extends BaseRestController {
 		}
 	}
 	
+	@RequestMapping(value = "/TaggableLike/{user:.+}", method = RequestMethod.GET)
+	public @ResponseBody JsonResponseData<TaggableItem> getTaggablelike(@PathVariable("user") String user) {
+		try {
+			LikeItem like = new LikeItem();
+			like.setUser(user);
+			List<TaggableItem> resp = landCycleBusiness.getTaggableLikes(like);
+			return ariaResponse(resp);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	
 	@RequestMapping(value = "/Like ", method = RequestMethod.POST)
 	public @ResponseBody JsonResponseData<LikeItem> like(@RequestBody LikeItem like, HttpServletResponse response) {
 		try {
@@ -244,11 +259,40 @@ public class LandCycleController extends BaseRestController {
 //				}
 				
 				media.setType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
-				
 				landCycleBusiness.uploadMedia(media);
 //				upload.getTaggable().setImageType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
 			}
 			landCycleBusiness.saveOrUpdateMedia(media);
+			media.setStream(null);
+			return ariaResponse(media);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	
+	@RequestMapping(value = "/UploadMediaMulti", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonResponseData<MediaItem> upload(@ModelAttribute("upolad") FileUpload upload) {
+		try {
+			// ****************************************************************************
+			// VALIDATE THE REQUEST
+			// ****************************************************************************
+			// TODO: validateRequest(ajaxRequest, request);
+
+			MultipartFile file = upload.getFile();
+			String ctype = file.getContentType();
+			// ****************************************************************************
+			// call business AND RETURN
+			// ****************************************************************************
+			MediaItem media = new MediaItem();
+			media.setId(upload.getId());
+			media.setType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
+			media.setStreams(file.getBytes());
+			landCycleBusiness.uploadMedia(media);
+			landCycleBusiness.saveOrUpdateMedia(media);
+			media.setStream(null);
+			media.setStreams(null);
 			return ariaResponse(media);
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);

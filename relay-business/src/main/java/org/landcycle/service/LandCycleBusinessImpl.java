@@ -117,6 +117,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		me.setIdTaggable(media.getId());
 		me.setName(media.getName());
 		me.setPath(getUrlImage() + media.getId() + "." + media.getType());
+		me.setType(media.getType());
 		mediaRepository.save(me);
 		media.setStream(null);
 
@@ -417,9 +418,43 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			resp.add(tmp);
 		}
 		return resp;
-//		return null;
+		// return null;
 	}
-	
+
+	@Override
+	public List<TaggableItem> getTaggableLikes(LikeItem like) throws Exception {
+		List<LikeEntity> respEntity = likeRepository.findByUser(like.getUser());
+		List<String> id = new ArrayList<String>();
+		for (LikeEntity likeEntity : respEntity) {
+			id.add(likeEntity.getLikesKey().getId());
+		}
+		if(id.size() == 0)
+			return null;
+		List<TaggableItem> response = new ArrayList<TaggableItem>();
+		List<TaggableEntity> item = taggableRepository.findByIdIn(id);
+		if (item != null && item.size() > 0) {
+			TaggableItem taggable = new TaggableItem();
+			User u = new User();
+			u.setMail(like.getUser());
+			taggable.setUser(u);
+			for (TaggableEntity taggableEntity : item) {
+				TaggableItem tmp = new TaggableItem();
+				if (taggableEntity.getLikes() != null && taggableEntity.getLikes().size() > 0) {
+//					log.debug("compute likes");
+					List<LikeEntity> likeEntity = taggableEntity.getLikes();
+					LikeItem likeResponse = new LikeItem();
+					likeResponse.setCount(taggableEntity.getLikes().size());
+					likeResponse.setMyLike(computeUserLike(likeEntity, taggable));
+
+					tmp.setLikes(likeResponse);
+				}
+				BeanUtils.copyProperties(taggableEntity, tmp);
+				response.add(tmp);
+			}
+		}
+		return response;
+	}
+
 	@Override
 	public LikeItem saveLike(LikeItem like) throws Exception {
 		// TODO Auto-generated method stub
@@ -471,5 +506,4 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		return route;
 	}
 
-	
 }

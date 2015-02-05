@@ -9,7 +9,6 @@ public class MediaItem {
 	private String stream;
 	private String path;
 	private String name;
-	@JsonIgnore
 	private String type;
 	@JsonIgnore
 	private byte[] streams;

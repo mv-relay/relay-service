@@ -32,6 +32,8 @@ public class MediaEntity {
 	private String path;
 	@Column(name = "name", length = 100)
 	private String name;
+	@Column(name = "type", length = 100)
+	private String type;
 	@Column(name = "createdat", updatable = false)
 	private Date createdAt;
 	@Column(name = "updatedat")
@@ -101,6 +103,14 @@ public class MediaEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }
