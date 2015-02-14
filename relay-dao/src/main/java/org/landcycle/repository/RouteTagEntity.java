@@ -13,6 +13,11 @@ import org.hibernate.annotations.GenericGenerator;
 public class RouteTagEntity {
 
 	@Id
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@Column(name = "uuid", unique = true)
+	private String uuid;
+
 	@Column(name = "idTaggable", length = 100)
 	private String id;
 

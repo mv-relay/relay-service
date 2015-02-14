@@ -4,10 +4,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "Comments")
@@ -23,14 +26,27 @@ public class CommentEntity {
 	}
 
 	@Id
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@Column(name = "uuid", unique = true)
+	private String uuid;
+
 	@Column(name = "idTaggable", length = 100)
 	private String id;
 	@Column(name = "user", length = 100)
 	private String user;
 	@Column(name = "comment", length = 100)
 	private String comment;
-	@Column(name = "createdat",updatable = false)
+	@Column(name = "createdat", updatable = false)
 	private Date createdAt;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 
 	public String getId() {
 		return id;
@@ -55,15 +71,14 @@ public class CommentEntity {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	
+
 	@PrePersist
 	void createdAt() {
-		this.createdAt  = new Date();
+		this.createdAt = new Date();
 	}
-
 
 	public Date getCreatedAt() {
 		return createdAt;
 	}
-	
+
 }

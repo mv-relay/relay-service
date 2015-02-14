@@ -15,7 +15,8 @@
 		http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<!-- SPRING CONFIG -->
-	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+	<mvc:annotation-driven
+		content-negotiation-manager="contentNegotiationManager" />
 	<bean id="contentNegotiationManager"
 		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
 		<property name="defaultContentType" value="application/json" />
@@ -25,7 +26,7 @@
 		<property name="ignoreAcceptHeader" value="false" />
 		<property name="useJaf" value="false" />
 	</bean>
-	
+
 	<bean
 		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 
@@ -36,7 +37,7 @@
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 
 	<bean id="jacksonObjectMapper" class="org.landcycle.controllers.utils.MapperUtil" />
-	
+
 	<mvc:annotation-driven>
 		<mvc:message-converters>
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
@@ -50,6 +51,13 @@
 	</mvc:annotation-driven>
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+<!-- 	<bean id="multipartResolver" -->
+<!-- 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+		<!-- the maximum size of an uploaded file in bytes -->
+
+<!-- 		<property name="maxUploadSize" value="1000" /> -->
+<!-- 	</bean> -->
 
 	<!-- <import resource="classpath:/dao-context.xml" /> -->
 	<import resource="classpath:cfg-certificate-jndi.xml" />
@@ -73,7 +81,7 @@
 			</list>
 		</property>
 	</bean>
-	
+
 
 
 </beans>

@@ -130,14 +130,8 @@ public class LandCycleController extends BaseRestController {
 				//
 				logger.debug("CTYPE : " + ctype);
 				int size = tg.getStream().getBytes().length;
-				if (size > SIZE_AVATAR) {
-					throw new LandcycleException("002", "Dimensione non consentita");
-				}
-				if (ctype != null
-						&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
-								.equals("image/pjpeg"))) {
-					throw new LandcycleException("0001", "Formato non consentito");
-				}
+				checkSize(size);
+				checkType(ctype);
 				MediaItem item = new MediaItem();
 				item.setStreams(Base64.decodeBase64(data.getBytes()));
 				item.setType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
@@ -151,6 +145,20 @@ public class LandCycleController extends BaseRestController {
 			logger.error("APPLICATION EXCEPTION", e);
 			throw new LandcycleException(e);
 		}
+	}
+
+	private void checkType(String ctype) {
+//		if (ctype != null
+//				&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
+//						.equals("image/pjpeg"))) {
+//			throw new LandcycleException("0001", "Formato non consentito");
+//		}
+	}
+
+	private void checkSize(int size) {
+//		if (size > SIZE_AVATAR) {
+//			throw new LandcycleException("002", "Dimensione non consentita");
+//		}
 	}
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.OPTIONS)
@@ -249,14 +257,8 @@ public class LandCycleController extends BaseRestController {
 				//
 				logger.debug("CTYPE : " + ctype);
 				int size = media.getStream().getBytes().length;
-				if (size > SIZE_AVATAR) {
-					throw new LandcycleException("002", "Dimensione non consentita");
-				}
-//				if (ctype != null
-//						&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
-//								.equals("image/pjpeg"))) {
-//					throw new LandcycleException("0001", "Formato non consentito");
-//				}
+				checkSize(size);
+				checkType(ctype);
 				
 				media.setType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
 				landCycleBusiness.uploadMedia(media);
@@ -279,7 +281,7 @@ public class LandCycleController extends BaseRestController {
 			// VALIDATE THE REQUEST
 			// ****************************************************************************
 			// TODO: validateRequest(ajaxRequest, request);
-
+			
 			MultipartFile file = upload.getFile();
 			String ctype = file.getContentType();
 			// ****************************************************************************
@@ -294,6 +296,19 @@ public class LandCycleController extends BaseRestController {
 			media.setStream(null);
 			media.setStreams(null);
 			return ariaResponse(media);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+	
+	@RequestMapping(value = "/config/{id}", method = RequestMethod.GET)
+	public @ResponseBody
+	JsonResponseData<String> getConfig(@PathVariable("id") String id) {
+		try {
+			
+			String config = landCycleBusiness.getConfig(id);
+			return ariaResponse(config);
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);
 			throw new LandcycleException(e);

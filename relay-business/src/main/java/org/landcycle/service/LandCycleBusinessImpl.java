@@ -27,6 +27,8 @@ import org.landcycle.api.User;
 import org.landcycle.api.UserItem;
 import org.landcycle.repository.CommentEntity;
 import org.landcycle.repository.CommentRepository;
+import org.landcycle.repository.ConfigEntity;
+import org.landcycle.repository.ConfigRepository;
 import org.landcycle.repository.LikeEntity;
 import org.landcycle.repository.LikeRepository;
 import org.landcycle.repository.LikesKey;
@@ -63,6 +65,8 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	LikeRepository likeRepository;
 	@Autowired
 	CommentRepository commentRepository;
+	@Autowired
+	ConfigRepository configRepository;
 	@Autowired
 	MediaRepository mediaRepository;
 	@Autowired
@@ -428,7 +432,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		for (LikeEntity likeEntity : respEntity) {
 			id.add(likeEntity.getLikesKey().getId());
 		}
-		if(id.size() == 0)
+		if (id.size() == 0)
 			return null;
 		List<TaggableItem> response = new ArrayList<TaggableItem>();
 		List<TaggableEntity> item = taggableRepository.findByIdIn(id);
@@ -440,7 +444,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 			for (TaggableEntity taggableEntity : item) {
 				TaggableItem tmp = new TaggableItem();
 				if (taggableEntity.getLikes() != null && taggableEntity.getLikes().size() > 0) {
-//					log.debug("compute likes");
+					// log.debug("compute likes");
 					List<LikeEntity> likeEntity = taggableEntity.getLikes();
 					LikeItem likeResponse = new LikeItem();
 					likeResponse.setCount(taggableEntity.getLikes().size());
@@ -506,4 +510,12 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		return route;
 	}
 
+	@Override
+	public String getConfig(String idApp) throws Exception {
+		ConfigEntity ent = configRepository.findByIdApp(idApp);
+		if (ent != null)
+			return ent.getJsonConfig();
+		else
+			return null;
+	}
 }

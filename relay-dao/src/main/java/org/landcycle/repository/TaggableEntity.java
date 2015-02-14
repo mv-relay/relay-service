@@ -87,8 +87,6 @@ public class TaggableEntity {
 
 	@JoinColumn(name = "idTaggable", referencedColumnName = "idTaggable", updatable = false)
 	@OneToMany(cascade = CascadeType.ALL)
-	// @OneToOne(cascade = CascadeType.ALL, optional = false, fetch =
-	// FetchType.EAGER)
 	private List<RouteEntity> route;
 
 	public String getId() {

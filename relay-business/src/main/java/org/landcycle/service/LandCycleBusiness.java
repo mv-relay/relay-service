@@ -34,4 +34,6 @@ public interface LandCycleBusiness {
 
 	List<TaggableItem> getTaggableLikes(LikeItem like) throws Exception;
 
+	String getConfig(String idApp) throws Exception;
+
 }
