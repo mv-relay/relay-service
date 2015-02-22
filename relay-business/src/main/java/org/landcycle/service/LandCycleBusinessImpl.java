@@ -1,12 +1,5 @@
 package org.landcycle.service;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,8 +48,7 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	protected static final Logger log = Logger.getLogger(LandCycleBusinessImpl.class.getName());
 
 	@Autowired
-	org.landcycle.util.ConfigurationLoader configurationLoader;
-
+	MediaFile mediaFile;
 	@Autowired
 	TaggableRepository taggableRepository;
 	@Autowired
@@ -75,7 +67,8 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 	@Override
 	public UserItem saveOrUpdateTaggable(UserItem upload) throws Exception {
 		// TODO Auto-generated method stub
-		log.debug("Input save or update : " + CommonUtils.bean2string(upload));
+		// log.debug("Input save or update : " +
+		// CommonUtils.bean2string(upload));
 		if (upload.getTaggable() != null) {
 
 			UserEntity uu = new UserEntity();
@@ -100,8 +93,8 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 				taggableEntity.setLat(positio.getLat());
 				taggableEntity.setLng(positio.getLng());
 			}
-			taggableEntity.setImg(getUrlImage() + id + "." + taggable.getImageType());
-			taggable.setImg(getUrlImage() + id + "." + taggable.getImageType());
+			taggableEntity.setImg(mediaFile.getUrlImage() + id + "." + taggable.getImageType());
+			taggable.setImg(mediaFile.getUrlImage() + id + "." + taggable.getImageType());
 			Set<TaggableEntity> tmp = new HashSet<TaggableEntity>();
 
 			tmp.add(taggableEntity);
@@ -120,117 +113,12 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 		MediaEntity me = new MediaEntity();
 		me.setIdTaggable(media.getId());
 		me.setName(media.getName());
-		me.setPath(getUrlImage() + media.getId() + "." + media.getType());
+		me.setPath(mediaFile.getUrlImage() + media.getId() + "." + media.getType());
 		me.setType(media.getType());
 		mediaRepository.save(me);
 		media.setStream(null);
 
 		return media;
-	}
-
-	private void writeFile(byte[] stream, String path, String imgType) throws IOException, Exception {
-		// *************************************************************************
-		// Inizializzo le variabili
-		// *************************************************************************
-		OutputStream fos = null;
-		BufferedOutputStream bos = null;
-		// BufferedImage image = null;
-		try {
-			// image = ImageIO.read(new ByteArrayInputStream(stream));
-			// *************************************************************************
-			// Converto la string base64 in byte
-			// *************************************************************************
-			// byte[] bstream = stream;
-			// *************************************************************************
-			// Scrivo il file
-			// *************************************************************************
-			// File f = new File(path);
-			fos = new FileOutputStream(path);
-			bos = new BufferedOutputStream(fos);
-			bos.write(stream);
-			// change permission
-			// int esito = chmod(path, 666);
-			// ImageIO.write(image, imgType, f);
-			// log.debug("Esito change permission {} ", esito);
-		} catch (IOException e) {
-			log.error("Errore nello scrivere il file", e);
-			throw e;
-		} finally {
-			// *************************************************************************
-			// Chiudo gli stream
-			// *************************************************************************
-			if (bos != null) {
-				bos.flush();
-				bos.close();
-			}
-			if (fos != null) {
-				fos.flush();
-				fos.close();
-			}
-			// if(image!= null){
-			// image.flush();
-			// }
-		}
-	}
-
-	/**
-	 * Read file.
-	 * 
-	 * @param file
-	 *            the file
-	 * @return the byte[]
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws Exception
-	 *             the exception
-	 */
-	@SuppressWarnings("unused")
-	private byte[] readFile(File file) throws IOException, Exception {
-		// *************************************************************************
-		// Inizializzo le variabili
-		// *************************************************************************
-		InputStream is = null;
-		byte[] bytes;
-		try {
-			// *************************************************************************
-			// Leggo il file
-			// *************************************************************************
-			is = new FileInputStream(file);
-			long length = file.length();
-			if (length > Integer.MAX_VALUE) {
-				// File is too large
-			}
-			bytes = new byte[(int) length];
-			// *************************************************************************
-			// Verifica
-			// *************************************************************************
-			int offset = 0;
-			int numRead = 0;
-			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
-				offset += numRead;
-			}
-
-			if (offset < bytes.length) {
-				throw new IOException("Could not completely read file " + file.getName());
-			}
-		} finally {
-			if (is != null)
-				is.close();
-		}
-		// *************************************************************************
-		// response
-		// *************************************************************************
-		return bytes;
-	}
-
-	private String getDirUpload() throws Exception {
-
-		return configurationLoader.getBaseImg();
-	}
-
-	private String getUrlImage() throws Exception {
-
-		return configurationLoader.getUrlImg();
 	}
 
 	@Override
@@ -392,10 +280,26 @@ public class LandCycleBusinessImpl implements LandCycleBusiness {
 
 	@Override
 	public MediaItem uploadMedia(MediaItem upload) throws Exception {
-		String fileName = uploadFileName(upload.getType(), upload.getId(), getDirUpload());
+		String fileName = uploadFileName(upload.getType(), upload.getId(), mediaFile.getDirUpload());
 		log.debug("##############fileName : " + fileName);
-		writeFile(upload.getStreams(), fileName, upload.getType());
+		if (isImage(upload.getType())) {
+			log.debug("##############writeImage");
+//			mediaFile.writeImage(upload.getStreams(), fileName, upload.getType());
+			mediaFile.writeFile(upload.getStreams(), fileName, upload.getType());
+		} else {
+			mediaFile.writeFile(upload.getStreams(), fileName, upload.getType());
+		}
 		return upload;
+	}
+
+	private boolean isImage(String ctype) throws Exception {
+		if (ctype == null || (ctype != null && ctype.isEmpty()))
+			throw new Exception("Formato non consentito");
+		if ((!ctype.equals("png") && !ctype.equals("jpeg") && !ctype.equals("gif") && !ctype.equals("jpg") && !ctype
+				.equals("pjpeg"))) {
+			return false;
+		}
+		return true;
 	}
 
 	private String uploadFileName(String type, String idFile, String path) throws Exception {

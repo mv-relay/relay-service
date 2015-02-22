@@ -25,4 +25,16 @@
 		</constructor-arg>
 	</bean>
 
+
+	<bean id="sizeImage" class="org.springframework.beans.factory.config.MapFactoryBean">
+		<property name="targetMapClass">
+			<value>java.util.HashMap</value>
+		</property>
+		<property name="sourceMap">
+			<map>
+				<entry key="THUMB" value="320" />
+				<entry key="LARGE" value="1280" />
+			</map>
+		</property>
+	</bean>
 </beans>

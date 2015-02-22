@@ -18,8 +18,12 @@ import org.landcycle.api.UserItem;
 import org.landcycle.api.exception.LandcycleException;
 import org.landcycle.api.rest.JsonResponseData;
 import org.landcycle.service.LandCycleBusiness;
+import org.landcycle.service.MediaFile;
 import org.landcycle.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,11 +48,13 @@ public class LandCycleController extends BaseRestController {
 
 	@Autowired
 	LandCycleBusiness landCycleBusiness;
+	@Autowired
+	MediaFile mediaFile;
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	public @ResponseBody JsonResponseData<TaggableItem> findAround(@RequestParam(value = "lat", required = false) String lat,
-			@RequestParam(value = "lng", required = false) String lng,
-			@RequestParam(value = "tags", required = false) String tags, @RequestParam(value = "mail", required = false) String mail) {
+			@RequestParam(value = "lng", required = false) String lng, @RequestParam(value = "tags", required = false) String tags,
+			@RequestParam(value = "mail", required = false) String mail) {
 		TaggableItem sale = new TaggableItem();
 		try {
 			if (lat != null && !"".equals(lat) && lng != null && !"".equals(lng)) {
@@ -59,7 +65,7 @@ public class LandCycleController extends BaseRestController {
 				if (tags != null && tags.length() > 0)
 					sale.setTags(tags.split(","));
 			}
-			if(mail!= null && !mail.isEmpty()){
+			if (mail != null && !mail.isEmpty()) {
 				User user = new User();
 				user.setMail(mail);
 				sale.setUser(user);
@@ -94,13 +100,13 @@ public class LandCycleController extends BaseRestController {
 			logger.error("UNHANDLED EXCEPTION", e);
 			throw new LandcycleException(e);
 		}
-		
+
 	}
-	
+
 	@RequestMapping(value = "/findByUser/{mail:.+}", method = RequestMethod.GET)
 	public @ResponseBody JsonResponseData<TaggableItem> findByUser(@PathVariable("mail") String id) {
 		try {
-			List<TaggableItem> items = landCycleBusiness.findByUser(URLDecoder.decode(id,"UTF-8"));
+			List<TaggableItem> items = landCycleBusiness.findByUser(URLDecoder.decode(id, "UTF-8"));
 			logger.debug("findByUser : " + CommonUtils.bean2string(items));
 			return ariaResponse(items);
 		} catch (LandcycleException e) {
@@ -148,17 +154,18 @@ public class LandCycleController extends BaseRestController {
 	}
 
 	private void checkType(String ctype) {
-//		if (ctype != null
-//				&& (!ctype.equals("image/png") && !ctype.equals("image/jpeg") && !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
-//						.equals("image/pjpeg"))) {
-//			throw new LandcycleException("0001", "Formato non consentito");
-//		}
+		// if (ctype != null
+		// && (!ctype.equals("image/png") && !ctype.equals("image/jpeg") &&
+		// !ctype.equals("image/gif") && !ctype.equals("image/jpg") && !ctype
+		// .equals("image/pjpeg"))) {
+		// throw new LandcycleException("0001", "Formato non consentito");
+		// }
 	}
 
 	private void checkSize(int size) {
-//		if (size > SIZE_AVATAR) {
-//			throw new LandcycleException("002", "Dimensione non consentita");
-//		}
+		// if (size > SIZE_AVATAR) {
+		// throw new LandcycleException("002", "Dimensione non consentita");
+		// }
 	}
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.OPTIONS)
@@ -178,7 +185,7 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = "/TaggableLike/{user:.+}", method = RequestMethod.GET)
 	public @ResponseBody JsonResponseData<TaggableItem> getTaggablelike(@PathVariable("user") String user) {
 		try {
@@ -191,7 +198,7 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = "/Like ", method = RequestMethod.POST)
 	public @ResponseBody JsonResponseData<LikeItem> like(@RequestBody LikeItem like, HttpServletResponse response) {
 		try {
@@ -202,10 +209,9 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
-	
-	
+
 	@RequestMapping(value = "/Like/{id}/{user:.+}", method = RequestMethod.DELETE)
-	public @ResponseBody JsonResponseData<LikeItem> deleteLike(@PathVariable("id") String id,@PathVariable("user") String user) {
+	public @ResponseBody JsonResponseData<LikeItem> deleteLike(@PathVariable("id") String id, @PathVariable("user") String user) {
 		try {
 			LikeItem like = new LikeItem();
 			like.setId(id);
@@ -228,7 +234,7 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = "/Route", method = RequestMethod.POST)
 	public @ResponseBody JsonResponseData<RouteItem> route(@RequestBody RouteItem route) {
 		try {
@@ -239,7 +245,7 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = "/UploadMedia", method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody JsonResponseData<MediaItem> saveOrUpdateMedia(@RequestBody MediaItem media) {
 
@@ -259,10 +265,11 @@ public class LandCycleController extends BaseRestController {
 				int size = media.getStream().getBytes().length;
 				checkSize(size);
 				checkType(ctype);
-				
+
 				media.setType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
 				landCycleBusiness.uploadMedia(media);
-//				upload.getTaggable().setImageType(ctype.substring(ctype.lastIndexOf("/") + 1, ctype.length()));
+				// upload.getTaggable().setImageType(ctype.substring(ctype.lastIndexOf("/")
+				// + 1, ctype.length()));
 			}
 			landCycleBusiness.saveOrUpdateMedia(media);
 			media.setStream(null);
@@ -272,18 +279,18 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = "/UploadMediaMulti", method = RequestMethod.POST)
-	public @ResponseBody
-	JsonResponseData<MediaItem> upload(@ModelAttribute("upolad") FileUpload upload) {
+	public @ResponseBody JsonResponseData<MediaItem> upload(@ModelAttribute("upolad") FileUpload upload) {
 		try {
 			// ****************************************************************************
 			// VALIDATE THE REQUEST
 			// ****************************************************************************
 			// TODO: validateRequest(ajaxRequest, request);
-			
+
 			MultipartFile file = upload.getFile();
-			String ctype = file.getContentType();
+			// String ctype = file.getContentType();
+			String ctype = MimeTypes.getContentType(file.getBytes());
 			// ****************************************************************************
 			// call business AND RETURN
 			// ****************************************************************************
@@ -301,14 +308,26 @@ public class LandCycleController extends BaseRestController {
 			throw new LandcycleException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = "/config/{id}", method = RequestMethod.GET)
-	public @ResponseBody
-	JsonResponseData<String> getConfig(@PathVariable("id") String id) {
+	public @ResponseBody JsonResponseData<String> getConfig(@PathVariable("id") String id) {
 		try {
-			
+
 			String config = landCycleBusiness.getConfig(id);
 			return ariaResponse(config);
+		} catch (Exception e) {
+			logger.error("APPLICATION EXCEPTION", e);
+			throw new LandcycleException(e);
+		}
+	}
+
+	@RequestMapping(value = "/media/{filter}/{id}", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<byte[]> getMedia(@PathVariable("filter") String filter, @PathVariable("id") String id) {
+		try {
+
+			final HttpHeaders headers = new HttpHeaders();
+
+			return new ResponseEntity<byte[]>(mediaFile.readFile(id, filter), headers, HttpStatus.CREATED);
 		} catch (Exception e) {
 			logger.error("APPLICATION EXCEPTION", e);
 			throw new LandcycleException(e);

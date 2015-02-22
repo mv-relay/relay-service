@@ -13,7 +13,7 @@ public interface TaggableRepository extends Repository<TaggableEntity, String> {
 	public TaggableEntity findOne(String id);
 	public List<TaggableEntity> findByUser(String user);
 	public List<TaggableEntity> findByIdIn(Collection<String>id);
-	@Query(nativeQuery = true, value = "select f.*, ( 6371 * acos( cos( radians(:latitudine) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(:longitudine) ) + sin( radians(:latitudine) ) * sin( radians( lat ) ) ) ) AS distance from Taggable AS f HAVING distance < 50 ORDER BY distance LIMIT 0 , 50")
+	@Query(nativeQuery = true, value = "select f.*, ( 6371 * acos( cos( radians(:latitudine) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(:longitudine) ) + sin( radians(:latitudine) ) * sin( radians( lat ) ) ) ) AS distance from Taggable AS f HAVING distance < 50 ORDER BY distance ")
 	public List<TaggableEntity> findByQuery(@Param("longitudine") Double longitudine,
 			@Param("latitudine") Double latitudine);
 	

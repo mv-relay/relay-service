@@ -9,7 +9,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Config")
+@Table(name = "APPConfig")
 public class ConfigEntity {
 	public ConfigEntity() {
 	}
